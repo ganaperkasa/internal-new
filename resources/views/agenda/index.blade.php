@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Laporan Harian
-            
+
           </div>
       </div>
     </div>
@@ -36,24 +36,12 @@
             <th> Tanggal </th>
             <th> Jam Mulai </th>
             <th> Jam Akhir </th>
-            
+
             <th> Aktifitas </th>
             <th> Tempat </th>
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <!-- <th class="">Judul</th> -->
-              <th class="">Tanggal</th>
-              <th class="">Jam Mulai</th>
-              <th class="">Jam Akhir</th>
-              
-              <th class="">Aktifitas</th>
-              <th class="">Tempat</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -76,10 +64,10 @@
               {data: 'tanggal', name: 'tanggal'},
               {data: 'jam1', name: 'jam1'},
               {data: 'jam2', name: 'jam2'},
-              
+
               {data: 'perihal', name: 'perihal'},
               {data: 'tempat', name: 'tempat'},
-              
+
                 {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
             ],
             initComplete: function () {
