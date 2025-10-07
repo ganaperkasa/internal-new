@@ -11,7 +11,7 @@
         <!-- <h6 class="mt-3">No account? <a href="javascript:void(0);" class="text-primary">Sign up now</a></h6> -->
         <div class="divider row"></div>
         <div>
-            <form action="{{ route('login') }}" method="post">
+            <form action="{{ route('login.post') }}" method="post">
               @csrf
                 <div class="form-row">
                     <div class="col-md-6">

@@ -3,69 +3,51 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
-use Illuminate\Http\Request, Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
-    use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = '/home';
+
+    // tampilkan form login
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
 
     public function login(Request $request)
     {
-
-        $this->validate($request, [
-            'email'    => 'required',
-            'password' => 'required',
-            // 'captcha' => 'required|captcha'
+        $request->validate([
+            'email'    => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        $login_type = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL)
-            ? 'email'
-            : 'username';
+        $login_type = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $request->merge([
-            $login_type => $request->input('email'),
-            'status' => 1,
-        ]);
+        $credentials = [
+            $login_type => $request->email,
+            'password'  => $request->password,
+        ];
 
-        // if ($this->hasTooManyLoginAttempts($request)) {
-        //     $this->fireLockoutEvent($request);
-        //
-        //     return $this->sendLockoutResponse($request);
-        // }
-
-        if (Auth::attempt($request->only($login_type, 'password'))) {
-
-            return redirect()->intended($this->redirectPath());
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended($this->redirectTo);
         }
-        // dd($request);
-        $this->incrementLoginAttempts($request);
 
-        return redirect()->back()
-            ->withInput($request->only($this->username(), 'remember'))
-            ->withErrors([
-                $this->username() => trans('auth.failed'),
-            ]);
+        return back()->withErrors([
+            'email' => 'Email/Username atau password salah.',
+        ])->onlyInput('email');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 
 
@@ -74,8 +56,4 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
 }

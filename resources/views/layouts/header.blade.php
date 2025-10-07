@@ -110,13 +110,13 @@
                                                         </div>
                                                         <div class="widget-content-right mr-2">
 
-                                                            <a class="btn-pill btn-shadow btn-shine btn btn-focus" href=""
+                                                            <a class="btn-pill btn-shadow btn-shine btn btn-focus" href="{{ route('logout') }}"
                                                                 onclick="event.preventDefault();
                                                                                 document.getElementById('logout-form').submit();">
                                                                 {{ __('Logout') }}
                                                             </a>
 
-                                                            <form id="logout-form" action="" method="POST" style="display: none;">
+                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                                                 @csrf
                                                             </form>
                                                         </div>
