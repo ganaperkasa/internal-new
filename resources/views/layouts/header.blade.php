@@ -102,7 +102,7 @@
                                                     <div class="widget-content-wrapper">
 
                                                         <div class="widget-content-left">
-                                                            <div class="widget-heading">
+                                                            <div class="widget-heading">{{ Auth::user()->name }}
                                                             </div>
                                                             <div class="widget-subheading opacity-8">
 

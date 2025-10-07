@@ -35,6 +35,20 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($cuti as $key => $value)
+                                    <tr>
+                                        <td>
+                                            {{ tglIndo($key) }}
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                @foreach ($value as $items)
+                                                    <li>{{ $items->cuti->user->name }} <a href="{{ route('halaman.preview', $items->cuti->id) }}"class="btn btn-warning btn-sm">File</a></li>
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -70,6 +84,23 @@
                                 </tr>
                             </tfoot>
                             <tbody>
+                                @foreach ($daily as $value)
+                                    <tr>
+
+                                        <td>
+                                            {{ tglIndo($value->tanggal) }}
+                                        </td>
+                                        <td>
+                                            {{ $value->name }}
+                                        </td>
+                                        <td>
+                                            {{ $value->perihal }}
+                                        </td>
+
+
+
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -98,6 +129,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($pekerjaan_software as $value)
+                                <tr>
+                                    <td class="text-center text-muted">#{{ $no }}</td>
+                                    <td>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->instansi }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->start) }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->end) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="badge badge-primary"> {{ $value->progress }}%</div>
+                                    </td>
+
+                                </tr>
+                                <?php $no++; ?>
+                            @endforeach
 
 
                         </tbody>
@@ -126,6 +180,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($pekerjaan_hardware as $value)
+                                <tr>
+                                    <td class="text-center text-muted">#{{ $no }}</td>
+                                    <td>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->instansi }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->start) }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->end) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="badge badge-primary"> {{ $value->progress }}%</div>
+                                    </td>
+
+                                </tr>
+                                <?php $no++; ?>
+                            @endforeach
 
 
                         </tbody>
@@ -154,6 +231,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($maintenance_software as $value)
+                                <tr>
+                                    <td class="text-center text-muted">#{{ $no }}</td>
+                                    <td>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->instansi }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->start) }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->end) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="badge badge-primary"> {{ $value->progress }}%</div>
+                                    </td>
+
+                                </tr>
+                                <?php $no++; ?>
+                            @endforeach
 
 
                         </tbody>
@@ -183,6 +283,31 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($maintenance_hardware as $value)
+                                <tr>
+                                    <td class="text-center text-muted">#{{ $no }}</td>
+                                    <td>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->instansi }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->start) }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->end) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="badge badge-primary"> {{ $value->progress }}%</div>
+                                    </td>
+
+                                </tr>
+                                <?php $no++; ?>
+                            @endforeach
+
+
                         </tbody>
                     </table>
                 </div>
@@ -209,6 +334,31 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $no = 1; ?>
+                            @foreach ($pekerjaan_lainnya as $value)
+                                <tr>
+                                    <td class="text-center text-muted">#{{ $no }}</td>
+                                    <td>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->instansi }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->start) }}
+                                    </td>
+                                    <td>
+                                        {{ tglIndo($value->end) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="badge badge-primary"> {{ $value->progress }}%</div>
+                                    </td>
+
+                                </tr>
+                                <?php $no++; ?>
+                            @endforeach
+
+
                         </tbody>
                     </table>
                 </div>
