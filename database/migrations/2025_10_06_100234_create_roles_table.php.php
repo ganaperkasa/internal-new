@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->smallInteger('status')->default(1);
-            $table->timestamps(); 
         });
     }
 
