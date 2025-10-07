@@ -84,18 +84,20 @@ class DailyController extends Controller
 
   public function store(Request $request)
     {
-if(auth()->user()->id != "45"){
-        $this->validate($request, [
-            // 'judul' => 'required',
-            // 'tempat' => 'required',
-            'aktifitas' => 'required',
-            'jam1' => 'required',
-            'jam2' => 'required',
-            'tanggal' => 'required',
-        ]);}
+        if (auth()->user()->id != "45") {
+            $request->validate([
+                // 'judul' => 'required',
+                // 'tempat' => 'required',
+                'aktifitas' => 'required',
+                'jam1' => 'required',
+                'jam2' => 'required',
+                'tanggal' => 'required|date',
+            ]);
+        }
+
         DB::beginTransaction();
-        try
-        {
+
+        try {
             $data = new Agenda();
             // $data->judul = $request->judul;
             $data->tempat = $request->tempat;
@@ -103,21 +105,20 @@ if(auth()->user()->id != "45"){
             $data->jam1 = $request->jam1;
             $data->jam2 = $request->jam2;
             $data->tanggal = date('Y-m-d', strtotime($request->tanggal));
-            $data->pelaksana = \Auth::user()->id;
-            $data->user_by = \Auth::user()->id;
+            $data->pelaksana = auth()->id();
+            $data->user_by = auth()->id();
             $data->save();
 
             DB::commit();
 
             return redirect('daily')->with('success', 'Data berhasil ditambah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('danger', 'Data gagal ditambah: ' . $e->getMessage());
         }
-        catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-        {
-            DB::rollback();
-            return redirect()->back()->with('danger', 'Data gagal ditambah');
-        }
-
     }
+
+
 
     public function edit($id)
     {
@@ -130,36 +131,38 @@ if(auth()->user()->id != "45"){
 
     public function update(Request $request, $id)
     {
-if(auth()->user()->id != "45"){
-      $this->validate($request, [
-          'aktifitas' => 'required',
-          'jam1' => 'required',
-          'jam2' => 'required',
-          'tanggal' => 'required',
-      ]);}
+        if (auth()->id() != 45) {
+            $request->validate([
+                'aktifitas' => 'required|string',
+                'jam1' => 'required|string',
+                'jam2' => 'required|string',
+                'tanggal' => 'required|date',
+            ]);
+        }
+
         DB::beginTransaction();
-        try
-        {
+
+        try {
             $data = Agenda::findOrFail($id);
-            // $data->judul = $request->judul;
-            $data->tempat = $request->tempat;
-            $data->perihal = $request->aktifitas;
-            $data->jam1 = $request->jam1;
-            $data->jam2 = $request->jam2;
-            $data->tanggal = date('Y-m-d', strtotime($request->tanggal));
-            $data->save();
+
+            $data->fill([
+                'tempat'   => $request->tempat,
+                'perihal'  => $request->aktifitas,
+                'jam1'     => $request->jam1,
+                'jam2'     => $request->jam2,
+                'tanggal'  => date('Y-m-d', strtotime($request->tanggal)),
+            ])->save();
 
             DB::commit();
-
             return redirect('daily')->with('success', 'Data berhasil dirubah');
-        }
-        catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-        {
-            DB::rollback();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
             return redirect()->back()->with('danger', 'Data gagal dirubah');
         }
-
     }
+
+
 
     public function destroy($id)
     {
