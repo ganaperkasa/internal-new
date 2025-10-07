@@ -19,14 +19,14 @@
           </a>
       </li>
       <li>
-          <a href="{{ url('daily/report') }}">
+          <a href="">
               <i class="metismenu-icon pe-7s-note2">
               </i>Rekap Harian
           </a>
       </li>
 
       <li>
-          <a href="{{ route('cuti.index') }}">
+          <a href="">
               <i class="metismenu-icon pe-7s-note2">
               </i>Cuti
           </a>
@@ -34,19 +34,19 @@
 
       <li class="app-sidebar__heading">Admin</li>
       <li>
-          <a href="{{ url('admin/surat') }}">
+          <a href="">
               <i class="metismenu-icon pe-7s-note2">
               </i>Surat
           </a>
       </li>
       <li>
-          <a href="{{ url('admin/aset') }}">
+          <a href="">
               <i class="metismenu-icon pe-7s-note2">
               </i>Aset
           </a>
       </li>
       <li>
-          <a href="{{ url('admin/project') }}">
+          <a href="">
               <i class="metismenu-icon pe-7s-note2">
               </i>Pekerjaan
           </a>

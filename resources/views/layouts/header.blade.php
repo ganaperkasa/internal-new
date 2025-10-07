@@ -102,7 +102,7 @@
                                                     <div class="widget-content-wrapper">
 
                                                         <div class="widget-content-left">
-                                                            <div class="widget-heading">{{ Auth::user()->name }}
+                                                            <div class="widget-heading">
                                                             </div>
                                                             <div class="widget-subheading opacity-8">
 
@@ -110,13 +110,13 @@
                                                         </div>
                                                         <div class="widget-content-right mr-2">
 
-                                                            <a class="btn-pill btn-shadow btn-shine btn btn-focus" href="{{ route('logout') }}"
+                                                            <a class="btn-pill btn-shadow btn-shine btn btn-focus" href=""
                                                                 onclick="event.preventDefault();
                                                                                 document.getElementById('logout-form').submit();">
                                                                 {{ __('Logout') }}
                                                             </a>
 
-                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                            <form id="logout-form" action="" method="POST" style="display: none;">
                                                                 @csrf
                                                             </form>
                                                         </div>
