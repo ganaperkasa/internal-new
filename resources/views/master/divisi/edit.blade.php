@@ -1,0 +1,65 @@
+@extends('layouts.backend')
+
+@push('custom-css')
+@endpush
+
+@section('content')
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="pe-7s-ribbon icon-gradient bg-night-fade">
+                    </i>
+                </div>
+                <div>Menerima Cuti
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-card mb-3 card">
+        {!! Form::model($cuti, [
+            'method' => 'PUT',
+            'route' => ['divisi.update', $divisi->id],
+            'enctype' => 'multipart/form-data'
+        ]) !!}
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-dark">
+                    <b>Terdapat beberapa kesalahan. Silahkan diperbaiki.</b><br>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </div>
+            @endif
+
+            @csrf
+
+            <div class="position-relative row form-group">
+                <label class="col-sm-3 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control-file" type="file" name="name" value="{{ $divisi->name }}" required>
+                </div>
+            </div>
+
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-sm-12 text-end">
+                    <a href="{{ URL::previous() }}" class="btn-shadow mr-3 btn btn-warning">Kembali</a>
+                    {!! Form::button('Simpan', [
+                        'class' => 'btn btn-success simpan',
+                        'type' => 'submit',
+                        'data-swa-text' => 'Menerima Cuti',
+                    ]) !!}
+                </div>
+            </div>
+            {!! Form::close() !!}
+        </div>
+    </div>
+@endsection
+
+
+@push('custom-scripts')
+
+@endpush
