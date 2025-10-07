@@ -21,5 +21,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
      Route::get('/home', [HomeController::class, 'index'])->name('home');
+     Route::get('daily/report', [DailyController::class, 'report'])->name('daily.report');
      Route::resource('daily', DailyController::class);
 });

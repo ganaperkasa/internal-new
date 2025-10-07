@@ -12,7 +12,7 @@ class DailyController extends Controller
 {
     public function report(Request $request)
     {
-
+        
     	if($request->ajax())
         {
             $user = $request->get('user');

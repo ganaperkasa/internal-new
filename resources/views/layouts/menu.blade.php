@@ -19,7 +19,7 @@
           </a>
       </li>
       <li>
-          <a href="">
+          <a href="{{ route('daily.report') }}">
               <i class="metismenu-icon pe-7s-note2">
               </i>Rekap Harian
           </a>
