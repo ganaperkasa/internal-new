@@ -7,10 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Instansi;
 use App\Models\Project;
 use App\Models\TypeProject;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\Setting;
 use App\User;
 use Auth;
-use DB,DataTables;
+use DB;
 use PDO;
 
 class ProjectController extends Controller
@@ -22,50 +23,49 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:5,6');
-    }
-  
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    //     $this->middleware('role:5,6');
+    // }
+
 
     public function index(Request $request)
     {
-
         if($request->ajax())
         {
-            $query = DB::select("select s.*, u.name as created,m.name as marketing, i.name as instansi from adm_project s
-                                inner join m_instansi i on i.id = s.instansi_id
-                                inner join users u on u.id = s.created_by
-                                inner join users m on m.id = s.marketing_id
-                                where s.status = 1 order by s.start desc");
-            $datatables = DataTables::of($query)
-                ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                        '<a href="'.url('admin/project/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>'.
-                        '<a href="'.url('admin/project/'.$data->id.'').'" class="mb-2 mr-2 btn btn-success" >Detail</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'project.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Pekerjaan '.$data->name.'?" >Hapus</button>'
-                        .\Form::close();
-                    return $html;
+            $query = DB::table('adm_project as s')
+                ->select(
+                    's.*',
+                    'u.name as created',
+                    'm.name as marketing',
+                    'i.name as instansi',
+                    's.perusahaan'
+                )
+                ->join('m_instansi as i', 'i.id', '=', 's.instansi_id')
+                ->join('users as u', 'u.id', '=', 's.created_by')
+                ->join('users as m', 'm.id', '=', 's.marketing_id')
+                ->where('s.status', 1);
+
+            return DataTables::of($query)
+                ->addColumn('action', function($data){
+                    $edit = '<a href="'.route('project.edit', $data->id).'" class="btn btn-primary btn-sm mb-1">Ubah</a>';
+                    $detail = '<a href="'.route('project.show', $data->id).'" class="btn btn-success btn-sm mb-1">Detail</a>';
+                    $delete = '<form method="POST" action="'.route('project.destroy', $data->id).'" style="display:inline-block;">'
+                        . csrf_field()
+                        . method_field('DELETE')
+                        . '<button type="submit" class="btn btn-danger btn-sm mb-1" onclick="return confirm(\'Hapus Pekerjaan '.$data->name.'?\')">Hapus</button>'
+                        . '</form>';
+                    return $edit . ' ' . $detail . ' ' . $delete;
                 })
-                ->editColumn('start',function($data){
-                    return tglIndo($data->start);
-                })
-                ->editColumn('end',function($data){
-                    return tglIndo($data->end);
-                })
-                ->editColumn('progress',function($data){
-                    return $data->progress."%";
-                })
-                ->editColumn('time',function($data){
-                    return $data->time." ".$data->time_type;
-                })
-                ->rawColumns(['action']);
-            return $datatables->make(true);
+                ->editColumn('start', fn($data) => tglIndo($data->start))
+                ->editColumn('end', fn($data) => tglIndo($data->end))
+                ->editColumn('progress', fn($data) => $data->progress . '%')
+                ->editColumn('time', fn($data) => $data->time . ' ' . $data->time_type)
+                ->rawColumns(['action'])
+                ->make(true);
         }
+
         return view('admin.project.index');
     }
 
@@ -145,7 +145,7 @@ class ProjectController extends Controller
         $data['user'] = User::findOrFail($data['data_edit']->created_by);
         $data['update'] = User::findOrFail($data['data_edit']->updated_by);
         $data['marketing'] = User::where('id',$data['data_edit']->marketing_id)->first();
-        
+
         return view('admin.project.show', $data);
     }
 

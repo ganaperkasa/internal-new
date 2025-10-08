@@ -46,7 +46,7 @@
           </a>
       </li>
       <li>
-          <a href="">
+          <a href="{{ url('admin/project') }}">
               <i class="metismenu-icon pe-7s-note2">
               </i>Pekerjaan
           </a>
