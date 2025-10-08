@@ -53,7 +53,7 @@
 <link rel="stylesheet" type="text/css" href="{{url('/assets/datatables/jquery.dataTables.css') }}" />
 <script type="text/javascript">
     $(document).ready(function(){
-    $("#table1").DataTable({
+    var table = $("#table1").DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ url('marketing/visit') }}",
@@ -67,20 +67,39 @@
             {data: 'action', name: 'action', className: 'text-center', orderable:false, searchable:false}
         ],
         initComplete: function() {
-            this.api().columns().every(function(index){
-                if(index < this.columns().nodes().length-1){
+            var api = this.api();
+
+            // Add search inputs to footer
+            api.columns().every(function(index){
+                var column = this;
+
+                // Skip action column
+                if(index < api.columns().nodes().length - 1){
                     var input = document.createElement("input");
-                    $(input).addClass('form-control');
-                    if(index == 1){ $(input).attr('type','date'); }
-                    $(input).appendTo($(this.footer()).empty())
-                        .on('change', function(){
-                            index.search($(this).val()).draw();
+                    $(input).addClass('form-control form-control-sm');
+
+                    // Date input for tanggal column
+                    if(index == 1){
+                        $(input).attr('type','date');
+                    } else {
+                        $(input).attr('type','text');
+                        $(input).attr('placeholder', 'Cari...');
+                    }
+
+                    $(input).appendTo($(column.footer()).empty())
+                        .on('keyup change clear', function(){
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
                         });
                 }
             });
+
             SweetAlert2Plugin.init();
         },
-        drawCallback: function(){ SweetAlert2Plugin.init(); }
+        drawCallback: function(){
+            SweetAlert2Plugin.init();
+        }
     });
 });
 </script>

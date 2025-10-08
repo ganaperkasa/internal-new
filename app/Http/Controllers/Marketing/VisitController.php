@@ -52,50 +52,68 @@ class VisitController extends Controller
     }
 
     public function index(Request $request)
-{
-    if ($request->ajax()) {
-        try {
-            $query = DB::table('mkt_kunjungan as k')
-                ->select(
-                    'k.id',
-                    'k.tanggal',
-                    'k.jam1',
-                    'k.jam2',
-                    'k.keterangan',
-                    'k.instansi_id',
-                    'u.name as created',
-                    'i.name as instansi'
-                )
-                ->join('m_instansi as i', 'i.id', '=', 'k.instansi_id')
-                ->join('users as u', 'u.id', '=', 'k.created_by')
-                ->where('k.status', 1)
-                ->orderBy('k.tanggal', 'desc');
+    {
+        if ($request->ajax()) {
+            try {
+                $query = DB::table('mkt_kunjungan as k')
+                    ->select(
+                        'k.id',
+                        'k.tanggal',
+                        'k.jam1',
+                        'k.jam2',
+                        'k.keterangan',
+                        'k.instansi_id',
+                        'u.name as created',
+                        'i.name as instansi'
+                    )
+                    ->join('m_instansi as i', 'i.id', '=', 'k.instansi_id')
+                    ->join('users as u', 'u.id', '=', 'k.created_by')
+                    ->where('k.status', 1)
+                    ->orderBy('k.tanggal', 'desc');
 
-            return DataTables::of($query)
-                ->addColumn('action', function($data){
-                    $editUrl = url('marketing/visit/'.$data->id.'/edit');
-                    $html = '<a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary btn-sm">Ubah</a>';
+                return DataTables::of($query)
+                    ->filterColumn('instansi', function($query, $keyword) {
+                        $query->whereRaw("i.name LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->filterColumn('tanggal', function($query, $keyword) {
+                        $query->whereRaw("k.tanggal LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->filterColumn('jam1', function($query, $keyword) {
+                        $query->whereRaw("k.jam1 LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->filterColumn('jam2', function($query, $keyword) {
+                        $query->whereRaw("k.jam2 LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->filterColumn('keterangan', function($query, $keyword) {
+                        $query->whereRaw("k.keterangan LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->filterColumn('created', function($query, $keyword) {
+                        $query->whereRaw("u.name LIKE ?", ["%{$keyword}%"]);
+                    })
+                    ->addColumn('action', function($data){
+                        $editUrl = url('marketing/visit/'.$data->id.'/edit');
+                        $html = '<a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary btn-sm">Ubah</a>';
 
-                    $html .= '<form method="POST" action="'.route('visit.destroy', $data->id).'" style="display:inline-block;">';
-                    $html .= csrf_field();
-                    $html .= method_field('DELETE');
-                    $html .= '<button type="submit" class="mb-2 mr-2 btn btn-danger btn-sm dt-btn" data-swa-text="Hapus Kunjungan '.$data->keterangan.'?">Hapus</button>';
-                    $html .= '</form>';
+                        $html .= '<form method="POST" action="'.route('visit.destroy', $data->id).'" style="display:inline-block;">';
+                        $html .= csrf_field();
+                        $html .= method_field('DELETE');
+                        $html .= '<button type="submit" class="mb-2 mr-2 btn btn-danger btn-sm dt-btn" data-swa-text="Hapus Kunjungan '.$data->keterangan.'?">Hapus</button>';
+                        $html .= '</form>';
 
-                    return $html;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
+                        return $html;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage()
+                ], 500);
+            }
         }
-    }
 
-    return view('marketing.visit.index');
-}
+        return view('marketing.visit.index');
+    }
 
 
     /**
