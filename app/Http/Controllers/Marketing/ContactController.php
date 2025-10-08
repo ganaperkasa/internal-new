@@ -13,11 +13,11 @@ use DB,DataTables;
 class ContactController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:6');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    //     $this->middleware('role:6');
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -26,28 +26,31 @@ class ContactController extends Controller
 
     public function index(Request $request)
     {
-        
-        if($request->ajax())
-        {
-            $query = DB::select("select k.*, i.name as instansi from mkt_kontak k 
-            inner join m_instansi i on i.id = k.instansi_id where k.status = 1");
-            $datatables = DataTables::of($query)
+        if ($request->ajax()) {
+            $query = DB::table('mkt_kontak as k')
+                ->join('m_instansi as i', 'i.id', '=', 'k.instansi_id')
+                ->select('k.*', 'i.name as instansi')
+                ->where('k.status', 1);
+
+            return DataTables::of($query)
                 ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                        '<a href="'.url('marketing/contact/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'contact.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Kontak '.$data->nama.'?" >Hapus</button>'
-                        .\Form::close();
-                    return $html;
+                    $editUrl = url('marketing/contact/'.$data->id.'/edit');
+                    $deleteUrl = route('contact.destroy', $data->id);
+                    return '
+                        <a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary">Ubah</a>
+                        <form action="'.$deleteUrl.'" method="POST" style="display:inline-block;">
+                            '.csrf_field().method_field('DELETE').'
+                            <button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Kontak '.$data->nama.'?">Hapus</button>
+                        </form>
+                    ';
                 })
-                ->rawColumns(['action']);
-            return $datatables->make(true);
+                ->rawColumns(['action'])
+                ->make(true);
         }
-        
+
         return view('marketing.contact.index');
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -72,13 +75,13 @@ class ContactController extends Controller
             'instansi_id' => 'required|max:200',
             'nama' => 'required',
             'telp_1' => 'required',
-            
+
         ]);
         DB::beginTransaction();
         try
         {
-            
-            
+
+
             $dataKontak = new Kontak();
             $dataKontak->instansi_id = $request->instansi_id;
             $dataKontak->nama = $request->nama;
@@ -89,7 +92,7 @@ class ContactController extends Controller
             $dataKontak->created_by = \Auth::user()->id;
             $dataKontak->updated_by = \Auth::user()->id;
             $dataKontak->save();
-        
+
             DB::commit();
 
             return redirect('marketing/contact')->with('success', 'Data berhasil ditambah');

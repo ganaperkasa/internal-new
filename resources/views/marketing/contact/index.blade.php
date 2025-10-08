@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Daftar Kontak Pelanggan
-            
+
           </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
         <div class="btn-actions-pane-right text-capitalize">
             <a href="{{ url('marketing/contact/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
-        
+
     </div>
     <div class="card-body">
       <table class="table table-hover table-striped table-bordered" id="table1">
@@ -41,16 +41,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th class="">Instansi</th>
-              <th class="">Nama</th>
-              <th class="">Telp 1</th>
-              <th class="">Telp 2</th>
-              <th class="">Jabatan</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -66,14 +56,15 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! url('marketing/contact') !!}',
+            // ajax: '{!! url('marketing/contact') !!}',
+            ajax: "{{ url('marketing/contact') }}",
             columns: [
-                {data: 'instansi', name: 'instansi'},
-                {data: 'nama', name: 'nama'},
-                {data: 'telp_1', name: 'telp_1'},
-                {data: 'telp_2', name: 'telp_2'},
-                {data: 'jabatan', name: 'jabatan'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
+                {data: 'instansi', name: 'i.name'},   // 👈 ubah ini
+                {data: 'nama', name: 'k.nama'},
+                {data: 'telp_1', name: 'k.telp_1'},
+                {data: 'telp_2', name: 'k.telp_2'},
+                {data: 'jabatan', name: 'k.jabatan'},
+                {data: 'action', name: 'action', orderable: false, searchable: false, sClass: 'text-center'}
             ],
             initComplete: function () {
                 this.api().columns().every(function (index) {
