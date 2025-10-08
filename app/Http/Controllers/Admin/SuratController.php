@@ -281,7 +281,7 @@ class SuratController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+         $request->validate([
             'instansi_id' => 'required',
             'perihal' => 'required',
             // 'address' => 'required',

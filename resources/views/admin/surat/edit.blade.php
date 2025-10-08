@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Ubah Surat {{ $data_edit->number }}
-            
+
           </div>
       </div>
     </div>
@@ -28,51 +28,69 @@
               @endforeach
           </div>
       @endif
-      {!! Form::model($data_edit, [
-          'method' => 'PATCH',
-          'url' => ['admin/surat', $data_edit->id],
-          'enctype' => 'multipart/form-data'
-      ]) !!}
+      <form action="{{ url('admin/surat/'.$data_edit->id) }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          @method('PATCH')
 
         <div class="position-relative row form-group">
-            <label class="col-sm-3 col-form-label">Instansi*</label>
+              <label class="col-sm-3 col-form-label">Instansi*</label>
               <div class="col-sm-8">
-                {{ Form::select('instansi_id', $instansi, null, ['class' => 'form-control select2']) }}
+                  <select name="instansi_id" class="form-control select2">
+                      <option value="">-- Pilih Instansi --</option>
+                      @foreach($instansi as $id => $nama)
+                          <option value="{{ $id }}" {{ old('instansi_id', $data_edit->instansi_id) == $id ? 'selected' : '' }}>
+                              {{ $nama }}
+                          </option>
+                      @endforeach
+                  </select>
               </div>
           </div>
+
           <div class="position-relative row form-group">
-            <label class="col-sm-3 col-form-label">Alamat</label>
+              <label class="col-sm-3 col-form-label">Alamat</label>
               <div class="col-sm-8">
-                {!! Form::text('address', null, ['class' => 'form-control'] ) !!}
+                  <input type="text" name="address" class="form-control"
+                         value="{{ old('address', $data_edit->address) }}">
               </div>
           </div>
-          
+
           <div class="position-relative row form-group">
-            <label class="col-sm-3 col-form-label">Perihal*</label>
+              <label class="col-sm-3 col-form-label">Perihal*</label>
               <div class="col-sm-8">
-                {!! Form::text('perihal', null, ['class' => 'form-control'] ) !!}
+                  <input type="text" name="perihal" class="form-control"
+                         value="{{ old('perihal', $data_edit->perihal) }}">
               </div>
           </div>
+
           <div class="position-relative row form-group">
-            <label class="col-sm-3 col-form-label">Tanggal*</label>
+              <label class="col-sm-3 col-form-label">Tanggal*</label>
               <div class="col-sm-4">
-                {!! Form::date('tanggal', null, ['class' => 'form-control'] ) !!}
+                  <input type="date" name="tanggal" class="form-control"
+                         value="{{ old('tanggal', $data_edit->tanggal) }}">
               </div>
           </div>
+
           <div class="position-relative row form-group">
-            <label class="col-sm-3 col-form-label">File Pendukung</label>
+              <label class="col-sm-3 col-form-label">File Pendukung</label>
               <div class="col-sm-8">
-                {!! Form::file('document', null, ['class' => 'form-control'] ) !!}
+                  <input type="file" name="document" class="form-control">
+                  @if($data_edit->document)
+                      <small class="form-text text-muted">
+                          File sekarang: <a href="{{ asset('storage/'.$data_edit->document) }}" target="_blank">Lihat</a>
+                      </small>
+                  @endif
               </div>
           </div>
-         
+
           <div class="position-relative row form-check">
               <div class="col-sm-10 offset-sm-2">
                   <a href="{{ URL::previous() }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
-                  {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah Surat']) !!}
+                  <button type="submit" class="btn btn-secondary simpan" data-swa-text="Merubah Surat">
+                      Simpan
+                  </button>
               </div>
           </div>
-      {!! Form::close() !!}
+      </form>
   </div>
 </div>
 @endsection
