@@ -14,13 +14,25 @@ class CheckRole
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, $roles)
     {
-        $roles = array_except(func_get_args(), [0,1]); // get array of your roles.
-        if (!in_array(Auth::user()->jabatan_id, $roles) && Auth::user()->role_id != 1) {
+         $user = Auth::user();
+
+        // Kalau belum login
+        if (!$user) {
+            return redirect('login');
+        }
+
+        // Kalau role_id = 1 (Superadmin) → akses semua
+        if ($user->role_id == 1) {
+            return $next($request);
+        }
+
+        // Cek berdasarkan nama role (misalnya: 'Admin', 'Staf')
+        if (! in_array($user->role->name, $roles)) {
             return redirect('home')->with('danger', 'Anda Tidak Punya Akses');
         }
-        
+
         return $next($request);
     }
 }

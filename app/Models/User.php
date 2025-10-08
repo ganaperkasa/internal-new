@@ -20,7 +20,19 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'jabatan_id',
+        'role_id',
+        'tgl_msk',
+        'divisi_id',
         'password',
+        'updated_at',
+        'created_at',
+        'foto',
+        'nik_poto',
+        'remember_token',
+        'status',
+        'pic',
+
     ];
 
     /**
@@ -59,5 +71,10 @@ class User extends Authenticatable
     public function cuti()
     {
         return $this->hasMany(Cuti::class, 'user_cuti', 'id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

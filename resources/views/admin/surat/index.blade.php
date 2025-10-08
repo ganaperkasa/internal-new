@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Surat
-            
+
           </div>
       </div>
     </div>
@@ -22,8 +22,8 @@
     <div class="card-header-tab card-header">
         <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
             <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
-            
-            
+
+
             <select id="myInputTextField" class="form-control">
                 <option>--Pilih Perusahaan--</option>
                 <option>SEP</option>
@@ -32,7 +32,7 @@
             </select>
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            
+
             <a href="{{ url('admin/surat/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
@@ -43,7 +43,6 @@
           <th> Perusahaan </th>
           <th> Tahun </th>
             <th> Nomor </th>
-            
             <th> Instansi </th>
             <th> Perihal </th>
             <th> Tanggal </th>
@@ -51,19 +50,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th class="">Perusahaan</th>
-                <th class="">Tahun</th>
-              <th class="">Nomor</th>
-              
-              <th class="">Instansi</th>
-              <th class="">Perihal</th>
-              <th class="">Tanggal</th>
-              <th class="">Pembuat</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -82,16 +68,16 @@
             //"order": [[ 4, "desc" ],[ 1, "desc" ]],
             "order": [[ 1, "desc" ],[ 2, "desc" ]],
             "iDisplayLength": 50,
-            ajax: '{!! url('admin/surat') !!}',
+            ajax: '{{ route('surat.index') }}',
             columns: [
-            {data: 'type', name: 'type'},
-            {data: 'tahun', name: 'tahun'},
-                {data: 'number', name: 'number'},
-                {data: 'instansi', name: 'instansi'},
-                {data: 'perihal', name: 'perihal'},
-                {data: 'tanggal', name: 'tanggal'},
-                {data: 'created', name: 'created'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
+                {data: 'type', name: 's.type'},
+                {data: 'tahun', name: 'tahun'},
+                {data: 'number', name: 's.number'},
+                {data: 'instansi', name: 'i.name'},
+                {data: 'perihal', name: 's.perihal'},
+                {data: 'tanggal', name: 's.tanggal'},
+                {data: 'created', name: 'u.name'},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             initComplete: function () {
                 this.api().columns().every(function (index) {
@@ -119,7 +105,7 @@
             }
         });
 
-        
+
         $( "#myInputTextField" ).change(function() {
             oTable.search($(this).val()).draw() ;
         });

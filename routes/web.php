@@ -1,11 +1,14 @@
 <?php
 
-use App\Http\Controllers\CutiBersamaController;
-use App\Http\Controllers\CutiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DailyController;
+use App\Http\Controllers\CutiBersamaController;
+use App\Http\Controllers\CutiController;
+use App\Http\Controllers\Admin\SuratController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\AsetController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -33,4 +36,11 @@ Route::middleware('auth')->group(function () {
      Route::resource('daily', DailyController::class);
      Route::resource('cuti', CutiController::class);
     Route::resource('cuti-bersama', CutiBersamaController::class);
+    // Route::resource('surat', SuratController::class);
+
+});
+Route::prefix('admin')->group(function () {
+    Route::resource('surat', SuratController::class);
+    Route::resource('project', ProjectController::class);
+    Route::resource('aset', AsetController::class);
 });

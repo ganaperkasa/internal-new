@@ -34,7 +34,7 @@
 
       <li class="app-sidebar__heading">Admin</li>
       <li>
-          <a href="">
+          <a href="{{ url('admin/surat') }}">
               <i class="metismenu-icon pe-7s-note2">
               </i>Surat
           </a>
