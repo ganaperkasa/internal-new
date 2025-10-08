@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Instansi;
 use App\Models\Surat;
 use App\Models\Setting;
-use App\User;
+use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -90,177 +90,157 @@ class SuratController extends Controller
      */
     public function store(Request $request)
     {
-
-        $this->validate($request, [
+        $request->validate([
             'instansi_id' => 'required',
-            'perihal' => 'required',
-            // 'address' => 'required',
-            'tanggal' => 'required',
+            'perihal'     => 'required',
+            // 'address'  => 'required',
+            'tanggal'     => 'required|date',
         ]);
+
         DB::beginTransaction();
-        try
-        {
-            $setting = Setting::where('id',1)->first();
+        try {
+            $setting = Setting::find(1);
             $type = $request->type;
 
             $msk_char = "";
             $getTanggal = $request->tanggal;
-            $bulan = date('m',strtotime($getTanggal));
-		    $tahun = date('y',strtotime($getTanggal));
-		    $fullTahun = date('Y',strtotime($getTanggal));
-            if($type == "MSK"){
-                $getLast = Surat::whereRaw("number = (select max(number) from adm_surat where type = 'MSK' and year(tanggal) = '$fullTahun') and status =1")->first();
+            $bulan = date('m', strtotime($getTanggal));
+            $tahun = date('y', strtotime($getTanggal));
+            $fullTahun = date('Y', strtotime($getTanggal));
 
-                if($getLast == null){
+            if ($type == "MSK") {
+                $getLast = Surat::whereRaw("
+                    number = (select max(number) from adm_surat
+                            where type = 'MSK' and year(tanggal) = '$fullTahun')
+                    and status = 1
+                ")->first();
+
+                if ($getLast == null) {
                     $formatNomor = '001';
-
-                }else{
+                } else {
                     $nowMonth = date('m');
-                    $nowYear =date('Y');
+                    $nowYear  = date('Y');
 
-                    if($nowMonth == $bulan && $fullTahun == $nowYear){
+                    if ($nowMonth == $bulan && $fullTahun == $nowYear) {
                         $getNomor = substr($getLast->number, 0, 3);
-                        $getNomor = (int)$getNomor;
-                        $getNomor++;
-                        $formatNomor = str_pad( $getNomor, 3, '0', STR_PAD_LEFT);
-                    }else{
-                        $getLastMonth = Surat::whereRaw("LEFT(number,3) = (select max(LEFT(number,3)) from adm_surat where type = 'MSK' and month(tanggal) = '$bulan' and year(tanggal) = '$fullTahun') and status =1")->first();
+                        $getNomor = (int)$getNomor + 1;
+                        $formatNomor = str_pad($getNomor, 3, '0', STR_PAD_LEFT);
+                    } else {
+                        $getLastMonth = Surat::whereRaw("
+                            LEFT(number,3) = (select max(LEFT(number,3)) from adm_surat
+                                            where type = 'MSK'
+                                            and month(tanggal) = '$bulan'
+                                            and year(tanggal) = '$fullTahun')
+                            and status = 1
+                        ")->first();
 
                         if ($getLastMonth == null) {
                             $getNomor = substr($getLast->number, 0, 3);
-                            $getNomor = (int)$getNomor;
-                            $getNomor++;
-                            $formatNomor = str_pad( $getNomor, 3, '0', STR_PAD_LEFT);
-
-                        }else{
-                            $getLastChar = Surat::whereRaw("msk_char = (select max(msk_char) from adm_surat where type = 'MSK' and month(tanggal) = '$bulan' and year(tanggal) = '$fullTahun') and status =1")->first();
+                            $getNomor = (int)$getNomor + 1;
+                            $formatNomor = str_pad($getNomor, 3, '0', STR_PAD_LEFT);
+                        } else {
+                            $getLastChar = Surat::whereRaw("
+                                msk_char = (select max(msk_char) from adm_surat
+                                            where type = 'MSK'
+                                            and month(tanggal) = '$bulan'
+                                            and year(tanggal) = '$fullTahun')
+                                and status = 1
+                            ")->first();
 
                             if ($getLastChar->msk_char == "") {
                                 $msk_char = "A";
-                            }else{
-
+                            } else {
                                 $lastChar = $getLastChar->msk_char;
                                 $lastChar++;
                                 $msk_char = $lastChar;
-
                             }
 
                             $getNomor = substr($getLastMonth->number, 0, 3);
-                            $formatNomor = $getNomor.".".$msk_char;
+                            $formatNomor = $getNomor . "." . $msk_char;
                         }
-
                     }
-
                 }
 
-                switch ($bulan) {
-                    case "01":
-                    $romawiBulan = "I";
-                    break;
-                case "02":
-                    $romawiBulan = "II";
-                    break;
-                case "03":
-                    $romawiBulan = "III";
-                    break;
-                case "04":
-                    $romawiBulan = "IV";
-                    break;
-                case "05":
-                    $romawiBulan = "V";
-                    break;
-                case "06":
-                    $romawiBulan = "VI";
-                    break;
-                case "07":
-                    $romawiBulan = "VII";
-                    break;
-                case "08":
-                    $romawiBulan = "VIII";
-                    break;
-                case "09":
-                    $romawiBulan = "IX";
-                    break;
-                case "10":
-                    $romawiBulan = "X";
-                    break;
-                case "11":
-                    $romawiBulan = "XI";
-                    break;
-                case "12":
-                    $romawiBulan = "XII";
-                    break;
-                default:
-                    $romawiBulan = "";
-                }
+                $romawi = [
+                    "01" => "I", "02" => "II", "03" => "III", "04" => "IV",
+                    "05" => "V", "06" => "VI", "07" => "VII", "08" => "VIII",
+                    "09" => "IX", "10" => "X", "11" => "XI", "12" => "XII"
+                ];
+                $romawiBulan = $romawi[$bulan] ?? "";
+
                 $type_msk = $request->type_msk;
-                if($type_msk == 'SK1'){
+                if ($type_msk == 'SK1') {
                     $type_msk = 'SK';
                 }
+
                 $nomor = "$formatNomor/$romawiBulan/$fullTahun/$type_msk/MSK";
+            } elseif ($type == "SEP") {
+                $getLast = Surat::whereRaw("
+                    number = (select max(number) from adm_surat
+                            where type = 'SEP'
+                            and month(tanggal) = '$bulan'
+                            and year(tanggal) = '$fullTahun')
+                    and status = 1
+                ")->first();
 
-
-            }elseif ($type == "SEP") {
-                $getLast = Surat::whereRaw("number = (select max(number) from adm_surat where type = 'SEP' and month(tanggal) = '$bulan' and year(tanggal) = '$fullTahun') and status =1")->first();
-
-                if($getLast == null){
+                if ($getLast == null) {
                     $getNomor = '001';
-                }else{
-                    $getNomor = substr($getLast->number, 0, 3);
-                    $getNomor = (int)$getNomor;
-                    $getNomor++;
+                } else {
+                    $getNomor = (int)substr($getLast->number, 0, 3) + 1;
                 }
 
-                $formatNomor = str_pad( $getNomor, 3, '0', STR_PAD_LEFT);
+                $formatNomor = str_pad($getNomor, 3, '0', STR_PAD_LEFT);
                 $nomor = "$formatNomor/$bulan$tahun/SEP";
-            }elseif ($type == "DIR"){
-                $getLast = Surat::whereRaw("number = (select max(number) from adm_surat where type = 'DIR' and month(tanggal) = '$bulan' and year(tanggal) = '$fullTahun') and status =1")->first();
+            } elseif ($type == "DIR") {
+                $getLast = Surat::whereRaw("
+                    number = (select max(number) from adm_surat
+                            where type = 'DIR'
+                            and month(tanggal) = '$bulan'
+                            and year(tanggal) = '$fullTahun')
+                    and status = 1
+                ")->first();
 
-                if($getLast == null){
+                if ($getLast == null) {
                     $getNomor = 1;
-                }else{
-                    $getNomor = substr($getLast->number, 0, 3);
-                    $getNomor = (int)$getNomor;
-                    $getNomor++;
+                } else {
+                    $getNomor = (int)substr($getLast->number, 0, 3) + 1;
                 }
 
-                $formatNomor = str_pad( $getNomor, 3, '0', STR_PAD_LEFT);
+                $formatNomor = str_pad($getNomor, 3, '0', STR_PAD_LEFT);
                 $nomor = "$formatNomor/$bulan$tahun/DIR";
-            }else{
+            } else {
                 return redirect()->back()->with('danger', 'Data gagal ditambah');
             }
 
             $data = new Surat();
-            $data->number = $nomor;
-            $data->msk_char = $msk_char;
+            $data->number      = $nomor;
+            $data->msk_char    = $msk_char;
             $data->instansi_id = $request->instansi_id;
-            $data->address = $request->address;
-            $data->perihal = $request->perihal;
-            $data->type = $request->type;
-            $data->tanggal = date('Y-m-d',strtotime($request->tanggal));
+            $data->address     = $request->address;
+            $data->perihal     = $request->perihal;
+            $data->type        = $request->type;
+            $data->tanggal     = date('Y-m-d', strtotime($request->tanggal));
 
-            if($request->hasFile('document')){
-                $req = $request->file('document');
-                $file = rand().'.'.$req->getClientOriginalExtension();
-                $req->move(public_path('uploads/surat/'),$file);
+            if ($request->hasFile('document')) {
+                $req  = $request->file('document');
+                $file = rand() . '.' . $req->getClientOriginalExtension();
+                $req->move(public_path('uploads/surat/'), $file);
                 $data->document = $file;
             }
 
-            $data->created_by = \Auth::user()->id;
-            $data->updated_by = \Auth::user()->id;
+            $data->created_by = auth()->id();
+            $data->updated_by = auth()->id();
             $data->save();
 
             DB::commit();
 
-            return redirect('admin/surat/'.$data->id)->with('success', 'Data berhasil ditambah');
+            return redirect('admin/surat/' . $data->id)->with('success', 'Data berhasil ditambah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('danger', 'Data gagal ditambah: ' . $e->getMessage());
         }
-        catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-        {
-            DB::rollback();
-            return redirect()->back()->with('danger', 'Data gagal ditambah');
-        }
-
     }
+
 
     /**
      * Display the specified resource.

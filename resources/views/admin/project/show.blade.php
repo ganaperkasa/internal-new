@@ -14,7 +14,7 @@
               </i>
           </div>
           <div>Informasi Pekerjaan
-            
+
           </div>
       </div>
       <div class="page-title-actions">
@@ -34,10 +34,8 @@
           </div>
       @endif
 
-      {!! Form::model($data_edit, [
-          
-          'enctype' => 'multipart/form-data'
-      ]) !!}
+    
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Perusahaan</label>
               <div class="col-sm-8">
@@ -68,14 +66,14 @@
                 <b>{{ $type->name }}</b>
               </div>
           </div>
-          
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Nominal Pekerjaan</label>
               <div class="col-sm-8">
                 <b>{{ toRp($data_edit->nominal) }}</b>
               </div>
           </div>
-         
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Tanggal Mulai Pekerjaan  (SPK)</label>
               <div class="col-sm-3">
@@ -126,7 +124,7 @@
                 <b>{{ $update->name }}</b>
               </div>
           </div>
-      {!! Form::close() !!}
+
   </div>
 </div>
 @endsection

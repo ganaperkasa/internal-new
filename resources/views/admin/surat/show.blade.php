@@ -14,7 +14,7 @@
               </i>
           </div>
           <div>Informasi Surat
-            
+
           </div>
       </div>
       <div class="page-title-actions">
@@ -34,12 +34,8 @@
           </div>
       @endif
 
-      {!! Form::model($data_edit, [
-          'method' => 'PATCH',
-          'url' => ['asman', $data_edit->id],
-          'enctype' => 'multipart/form-data'
-      ]) !!}
-       
+
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Nomor Surat</label>
               <div class="col-sm-8">
@@ -52,7 +48,7 @@
                 <b>{{ $instansi->name }}</b>
               </div>
           </div>
-          
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Alamat</label>
               <div class="col-sm-8">
@@ -85,7 +81,7 @@
                 <b>{{ $user->name }}</b>
               </div>
           </div>
-      {!! Form::close() !!}
+  
   </div>
 </div>
 @endsection
