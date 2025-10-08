@@ -14,7 +14,7 @@
               </i>
           </div>
           <div>Informasi Aset
-            
+
           </div>
       </div>
       <div class="page-title-actions">
@@ -33,12 +33,13 @@
           </div>
       @endif
 
-      {!! Form::model($data_edit, [
+      {{-- {!! Form::model($data_edit, [
           'method' => 'PATCH',
           'url' => ['asman', $data_edit->id],
           'enctype' => 'multipart/form-data'
-      ]) !!}
+      ]) !!} --}}
        
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Nomor Aset</label>
               <div class="col-sm-8">
@@ -51,7 +52,7 @@
                 <b>{{ $barang->name }}</b>
               </div>
           </div>
-          
+
           <div class="position-relative row form-group">
             <label class="col-sm-3">Merk Barang</label>
               <div class="col-sm-8">
@@ -100,7 +101,7 @@
                 <b>{{ $user->name }}</b>
               </div>
           </div>
-      {!! Form::close() !!}
+      {{-- {!! Form::close() !!} --}}
   </div>
 </div>
 @endsection

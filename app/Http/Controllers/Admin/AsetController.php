@@ -9,7 +9,7 @@ use App\Models\Instansi;
 use App\Models\Barang;
 use App\Models\Aset;
 use App\Models\Setting;
-use App\User;
+use App\Models\User;
 use DB,DataTables;
 use Carbon\Carbon;
 
@@ -203,7 +203,7 @@ class AsetController extends Controller
     {
         $request->validate([
             'barang_id'   => 'required',
-            'number'      => 'required',
+            'number'      => 'nullable',
             'spesifikasi' => 'required',
             'name'        => 'required',
         ]);
