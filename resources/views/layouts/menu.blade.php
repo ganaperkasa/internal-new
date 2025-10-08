@@ -40,7 +40,7 @@
           </a>
       </li>
       <li>
-          <a href="">
+          <a href="{{ url('admin/aset') }}">
               <i class="metismenu-icon pe-7s-note2">
               </i>Aset
           </a>

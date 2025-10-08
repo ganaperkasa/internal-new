@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Aset
-            
+
           </div>
       </div>
     </div>
@@ -40,16 +40,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th class="">Jenis Barang</th>
-                <th class="">Nomor</th>
-                <th class="">Merk Barang</th>
-                <th class="">Spesifikasi</th>
-                <th class="">Kondisi</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -62,45 +52,58 @@
 <link rel="stylesheet" type="text/css" href="{{url('/assets/datatables/jquery.dataTables.css') }}" />
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#table1").DataTable({
-            processing: true,
-            serverSide: true,
-            "order": [[ 4, "desc" ],[ 1, "desc" ]],
-            ajax: '{!! url('admin/aset') !!}',
-            columns: [
-                {data: 'barang', name: 'barang'},
-                {data: 'number', name: 'number'},
-                {data: 'name', name: 'name'},
-                {data: 'spesifikasi', name: 'spesifikasi'},
-                {data: 'kondisi', name: 'kondisi'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
-            ],
-            initComplete: function () {
-                this.api().columns().every(function (index) {
-                    var column = this;
-                    var colCount = this.columns().nodes().length - 1;
-                    if(index !== colCount){
-                        var input = document.createElement("input");
-                        $(input).addClass('form-control');
-                        // if(index == 3)
-                        // {
-                        //     $(input).attr('type', 'date');
-                        // }
-                        $(input).appendTo($(column.footer()).empty())
-                        .on('change', function () {
-                            column.search($(this).val(), false, false, true).draw();
-                        });
-
-                    }
-
-                });
-                SweetAlert2Plugin.init();
-            },
-            drawCallback: function( settings ) {
-              SweetAlert2Plugin.init();
+    var table = $("#table1").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{!! url('admin/aset') !!}',
+            type: 'GET',
+            error: function(xhr, error, code) {
+                console.log('Ajax Error:', xhr.responseText);
+                console.log('Status:', xhr.status);
+                console.log('Error:', error);
+                console.log('Code:', code);
+                alert('Error: ' + xhr.responseText);
             }
-        });
+        },
+        order: [[ 4, "desc" ],[ 1, "desc" ]],
+        columns: [
+            {data: 'barang', name: 'i.name', defaultContent: '-'},
+            {data: 'number', name: 's.number', defaultContent: '-'},
+            {data: 'name', name: 's.name', defaultContent: '-'},
+            {data: 'spesifikasi', name: 's.spesifikasi', defaultContent: '-'},
+            {data: 'kondisi', name: 's.kondisi', defaultContent: '-'},
+            {data: 'action', name: 'action', className: 'text-center', orderable: false, searchable: false}
+        ],
+        initComplete: function () {
+            console.log('DataTable initialized');
+            this.api().columns().every(function (index) {
+                var column = this;
+                var colCount = column.table().columns().nodes().length - 1;
+
+                if(index !== colCount){
+                    var input = document.createElement("input");
+                    $(input).addClass('form-control');
+                    $(input).appendTo($(column.footer()).empty())
+                    .on('keyup change', function () {
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+                }
+            });
+
+            if(typeof SweetAlert2Plugin !== 'undefined') {
+                SweetAlert2Plugin.init();
+            }
+        },
+        drawCallback: function( settings ) {
+            if(typeof SweetAlert2Plugin !== 'undefined') {
+                SweetAlert2Plugin.init();
+            }
+        }
     });
+});
 </script>
 
 @endpush

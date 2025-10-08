@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Models\Instansi;
 use App\Models\Barang;
 use App\Models\Aset;
 use App\Models\Setting;
 use App\User;
-use Auth;
 use DB,DataTables;
+use Carbon\Carbon;
+
 use PDO;
 
 class AsetController extends Controller
@@ -23,41 +25,69 @@ class AsetController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-  
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:5');
-    }
+
+    // public function __construct()
+    // {
+    //    $this->middleware('auth');
+    //     $this->middleware('role:5,6');
+    // }
 
     public function index(Request $request)
     {
+        if ($request->ajax()) {
+            try {
+                // Test koneksi database dulu
+                $count = DB::table('adm_aset')->where('status', 1)->count();
+                \Log::info('Total aset: ' . $count);
 
-        if($request->ajax())
-        {
-            $query = DB::select("select s.*, u.name as created, i.name as barang,mi.name as instansi from adm_aset s
-                                left join m_barang i on i.id = s.barang_id
-                                left join users u on u.id = s.created_by
-                                left join m_instansi mi on mi.id = s.instansi_id
-                                where s.status = 1 ");
-            $datatables = DataTables::of($query)
-                ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                        '<a href="'.url('admin/aset/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>'.
-                        '<a href="'.url('admin/aset/'.$data->id.'').'" class="mb-2 mr-2 btn btn-success" >Detail</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'aset.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Aset '.$data->number.'?" >Hapus</button>'
-                        .\Form::close();
-                    return $html;
-                })
-                ->editColumn('kondisi',function($data){
-                    return $data->kondisi.". ".$data->instansi;
-                })
-                ->rawColumns(['action']);
-            return $datatables->make(true);
+                $data = DB::table('adm_aset as s')
+                    ->select(
+                        's.id',
+                        's.number',
+                        's.name',
+                        's.spesifikasi',
+                        's.kondisi',
+                        'u.name as created',
+                        'i.name as barang',
+                        'mi.name as instansi'
+                    )
+                    ->leftJoin('m_barang as i', 'i.id', '=', 's.barang_id')
+                    ->leftJoin('users as u', 'u.id', '=', 's.created_by')
+                    ->leftJoin('m_instansi as mi', 'mi.id', '=', 's.instansi_id')
+                    ->where('s.status', 1);
+
+                return DataTables::of($data)
+                    ->addColumn('action', function ($data) {
+                        $editUrl = url('admin/aset/'.$data->id.'/edit');
+                        $detailUrl = url('admin/aset/'.$data->id);
+
+                        $html  = '<a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary">Ubah</a>';
+                        $html .= '<a href="'.$detailUrl.'" class="mb-2 mr-2 btn btn-success">Detail</a>';
+                        $html .= '<form method="POST" action="'.route('aset.destroy', $data->id).'" style="display:inline-block;">';
+                        $html .= csrf_field();
+                        $html .= method_field('DELETE');
+                        $html .= '<button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Aset '.$data->number.'?">Hapus</button>';
+                        $html .= '</form>';
+                        return $html;
+                    })
+                    ->editColumn('kondisi', function ($data) {
+                        return ($data->kondisi ?? '') . " - " . ($data->instansi ?? '');
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+
+            } catch (\Exception $e) {
+                \Log::error('DataTables Error: ' . $e->getMessage());
+                \Log::error($e->getTraceAsString());
+
+                return response()->json([
+                    'error' => $e->getMessage(),
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ], 500);
+            }
         }
+
         return view('admin.aset.index');
     }
 
@@ -82,16 +112,16 @@ class AsetController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
-            'barang_id' => 'required',
-            'number' => 'required',
+        $request->validate([
+            'barang_id'   => 'required',
+            'number'      => 'required',
             'spesifikasi' => 'required',
-            'name' => 'required',
+            'name'        => 'required',
         ]);
         DB::beginTransaction();
         try
         {
-            
+
             $data = new Aset();
             $data->number = $request->number;
             $data->name = $request->name;
@@ -99,7 +129,7 @@ class AsetController extends Controller
             $data->spesifikasi = $request->spesifikasi;
             $data->keterangan = $request->keterangan;
             $data->kondisi = $request->kondisi;
-            
+
             if($request->kondisi == "Pinjam/Sewa"){
                 $data->instansi_id = $request->instansi_id;
             }else{
@@ -138,12 +168,12 @@ class AsetController extends Controller
     {
 
         $data['data_edit'] = Aset::where('id',$id)->first();
-        
+
         $data['instansi'] = Instansi::where('id',$data['data_edit']->instansi_id)->first();
-        
+
         $data['barang'] = Barang::findOrFail($data['data_edit']->barang_id);
         $data['user'] = User::findOrFail($data['data_edit']->created_by);
-        
+
         return view('admin.aset.show', $data);
     }
 
@@ -171,11 +201,11 @@ class AsetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'barang_id' => 'required',
+        $request->validate([
+            'barang_id'   => 'required',
+            'number'      => 'required',
             'spesifikasi' => 'required',
-            'name' => 'required',
-            
+            'name'        => 'required',
         ]);
         DB::beginTransaction();
         try
@@ -186,7 +216,7 @@ class AsetController extends Controller
             $data->spesifikasi = $request->spesifikasi;
             $data->keterangan = $request->keterangan;
             $data->kondisi = $request->kondisi;
-            
+
             if($request->kondisi == "Pinjam/Sewa"){
                 $data->instansi_id = $request->instansi_id;
             }else{
