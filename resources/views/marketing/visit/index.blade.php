@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Hasil Kunjungan
-            
+
           </div>
       </div>
     </div>
@@ -41,17 +41,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th class="">Instansi</th>
-                <th class="">Tanggal</th>
-                <th class="">Jam Mulai</th>
-                <th class="">Jam Akhir</th>
-                <th class="">Aktifitas</th>
-                <th class="">Pembuat</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -64,45 +53,36 @@
 <link rel="stylesheet" type="text/css" href="{{url('/assets/datatables/jquery.dataTables.css') }}" />
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#table1").DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{!! url('marketing/visit') !!}',
-            columns: [
-              {data: 'instansi', name: 'instansi'},
-              {data: 'tanggal', name: 'tanggal'},
-              {data: 'jam1', name: 'jam1'},
-              {data: 'jam2', name: 'jam2'},
-              {data: 'keterangan', name: 'keterangan'},
-              {data: 'created', name: 'created'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
-            ],
-            initComplete: function () {
-                this.api().columns().every(function (index) {
-                    var column = this;
-                    var colCount = this.columns().nodes().length - 1;
-                    if(index !== colCount){
-                        var input = document.createElement("input");
-                        $(input).addClass('form-control');
-                        if(index == 1)
-                        {
-                            $(input).attr('type', 'date');
-                        }
-                        $(input).appendTo($(column.footer()).empty())
-                        .on('change', function () {
-                            column.search($(this).val(), false, false, true).draw();
+    $("#table1").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('marketing/visit') }}",
+        columns: [
+            {data: 'instansi', name: 'instansi'},
+            {data: 'tanggal', name: 'tanggal'},
+            {data: 'jam1', name: 'jam1'},
+            {data: 'jam2', name: 'jam2'},
+            {data: 'keterangan', name: 'keterangan'},
+            {data: 'created', name: 'created'},
+            {data: 'action', name: 'action', className: 'text-center', orderable:false, searchable:false}
+        ],
+        initComplete: function() {
+            this.api().columns().every(function(index){
+                if(index < this.columns().nodes().length-1){
+                    var input = document.createElement("input");
+                    $(input).addClass('form-control');
+                    if(index == 1){ $(input).attr('type','date'); }
+                    $(input).appendTo($(this.footer()).empty())
+                        .on('change', function(){
+                            index.search($(this).val()).draw();
                         });
-
-                    }
-                });
-
-                SweetAlert2Plugin.init();
-            },
-            drawCallback: function( settings ) {
-              SweetAlert2Plugin.init();
-            }
-        });
+                }
+            });
+            SweetAlert2Plugin.init();
+        },
+        drawCallback: function(){ SweetAlert2Plugin.init(); }
     });
+});
 </script>
 
 @endpush

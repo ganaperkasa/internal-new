@@ -9,6 +9,10 @@ use App\Http\Controllers\CutiController;
 use App\Http\Controllers\Admin\SuratController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AsetController;
+use App\Http\Controllers\Marketing\VisitController;
+use App\Http\Controllers\Marketing\ContactController;
+
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -40,7 +44,16 @@ Route::prefix('admin')->group(function () {
     Route::resource('aset', AsetController::class);
 });
 
+Route::prefix('marketing')->group(function() {
+    Route::get('visit/contact', [VisitController::class, 'contact']);
+    Route::post('get/contact', [VisitController::class, 'contact']);
+    Route::resource('visit', VisitController::class);
+    Route::resource('contact', ContactController::class);
+});
+
 // Route::group(    ['prefix' => 'admin','middleware' => ['auth', 'role:5,6'],],function () {
 //         Route::resource('aset', AsetController::class);
 //         Route::resource('surat', SuratController::class);
 //     });
+
+
