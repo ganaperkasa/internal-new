@@ -9,7 +9,7 @@ use App\Models\Project;
 use App\Models\TypeProject;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Setting;
-use App\User;
+use App\Models\User;
 use Auth;
 use DB;
 use PDO;
@@ -91,7 +91,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
+        $request->validate([
             'instansi_id' => 'required',
             'name' => 'required',
             'start' => 'required',
