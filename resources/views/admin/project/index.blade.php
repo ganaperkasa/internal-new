@@ -60,7 +60,7 @@
     let oTable = $("#table1").DataTable({
         processing: true,
         serverSide: true,
-        order: [[2, 'desc']], 
+        order: [[2, 'desc']],
         pageLength: 50,
         ajax: "{{ url('admin/project') }}",
         columns: [
@@ -84,6 +84,14 @@
                         column.search($(this).val()).draw();
                     });
             });
+             if(typeof SweetAlert2Plugin !== 'undefined') {
+                SweetAlert2Plugin.init();
+            }
+        },
+        drawCallback: function( settings ) {
+            if(typeof SweetAlert2Plugin !== 'undefined') {
+                SweetAlert2Plugin.init();
+            }
         }
     });
 });

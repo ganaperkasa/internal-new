@@ -10,21 +10,18 @@ use App\Models\Barang;
 use App\Models\Aset;
 use App\Models\Setting;
 use App\Models\User;
-use DB,DataTables;
+use DB, DataTables;
 use Carbon\Carbon;
 
 use PDO;
 
 class AsetController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
 
     // public function __construct()
     // {
@@ -40,51 +37,39 @@ class AsetController extends Controller
                 $count = DB::table('adm_aset')->where('status', 1)->count();
                 \Log::info('Total aset: ' . $count);
 
-                $data = DB::table('adm_aset as s')
-                    ->select(
-                        's.id',
-                        's.number',
-                        's.name',
-                        's.spesifikasi',
-                        's.kondisi',
-                        'u.name as created',
-                        'i.name as barang',
-                        'mi.name as instansi'
-                    )
-                    ->leftJoin('m_barang as i', 'i.id', '=', 's.barang_id')
-                    ->leftJoin('users as u', 'u.id', '=', 's.created_by')
-                    ->leftJoin('m_instansi as mi', 'mi.id', '=', 's.instansi_id')
-                    ->where('s.status', 1);
+                $data = DB::table('adm_aset as s')->select('s.id', 's.number', 's.name', 's.spesifikasi', 's.kondisi', 'u.name as created', 'i.name as barang', 'mi.name as instansi')->leftJoin('m_barang as i', 'i.id', '=', 's.barang_id')->leftJoin('users as u', 'u.id', '=', 's.created_by')->leftJoin('m_instansi as mi', 'mi.id', '=', 's.instansi_id')->where('s.status', 1);
 
                 return DataTables::of($data)
                     ->addColumn('action', function ($data) {
-                        $editUrl = url('admin/aset/'.$data->id.'/edit');
-                        $detailUrl = url('admin/aset/'.$data->id);
+                        $editUrl = url('admin/aset/' . $data->id . '/edit');
+                        $detailUrl = url('admin/aset/' . $data->id);
 
-                        $html  = '<a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary">Ubah</a>';
-                        $html .= '<a href="'.$detailUrl.'" class="mb-2 mr-2 btn btn-success">Detail</a>';
-                        $html .= '<form method="POST" action="'.route('aset.destroy', $data->id).'" style="display:inline-block;">';
+                        $html = '<a href="' . $editUrl . '" class="mb-2 mr-2 btn btn-primary">Ubah</a>';
+                        $html .= '<a href="' . $detailUrl . '" class="mb-2 mr-2 btn btn-success">Detail</a>';
+                        $html .= '<form method="POST" action="' . route('aset.destroy', $data->id) . '" style="display:inline-block;">';
                         $html .= csrf_field();
                         $html .= method_field('DELETE');
-                        $html .= '<button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Aset '.$data->number.'?">Hapus</button>';
+                        $html .= '<button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Aset ' . $data->number . '?">Hapus</button>';
                         $html .= '</form>';
                         return $html;
                     })
                     ->editColumn('kondisi', function ($data) {
-                        return ($data->kondisi ?? '') . " - " . ($data->instansi ?? '');
+                        return ($data->kondisi ?? '') . ' - ' . ($data->instansi ?? '');
                     })
                     ->rawColumns(['action'])
                     ->make(true);
-
             } catch (\Exception $e) {
                 \Log::error('DataTables Error: ' . $e->getMessage());
                 \Log::error($e->getTraceAsString());
 
-                return response()->json([
-                    'error' => $e->getMessage(),
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile()
-                ], 500);
+                return response()->json(
+                    [
+                        'error' => $e->getMessage(),
+                        'line' => $e->getLine(),
+                        'file' => $e->getFile(),
+                    ],
+                    500,
+                );
             }
         }
 
@@ -98,9 +83,9 @@ class AsetController extends Controller
      */
     public function create()
     {
-        $data['barang'] = Barang::where('status',1)->pluck('name','id');
-        $data['instansi'] = Instansi::where('status',1)->orderBy('name')->pluck('name','id');
-        return view('admin.aset.create',$data);
+        $data['barang'] = Barang::where('status', 1)->pluck('name', 'id');
+        $data['instansi'] = Instansi::where('status', 1)->orderBy('name')->pluck('name', 'id');
+        return view('admin.aset.create', $data);
     }
 
     /**
@@ -111,17 +96,14 @@ class AsetController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
-            'barang_id'   => 'required',
-            'number'      => 'required',
+            'barang_id' => 'required',
+            'number' => 'required',
             'spesifikasi' => 'required',
-            'name'        => 'required',
+            'name' => 'required',
         ]);
         DB::beginTransaction();
-        try
-        {
-
+        try {
             $data = new Aset();
             $data->number = $request->number;
             $data->name = $request->name;
@@ -130,15 +112,15 @@ class AsetController extends Controller
             $data->keterangan = $request->keterangan;
             $data->kondisi = $request->kondisi;
 
-            if($request->kondisi == "Pinjam/Sewa"){
+            if ($request->kondisi == 'Pinjam/Sewa') {
                 $data->instansi_id = $request->instansi_id;
-            }else{
+            } else {
                 $data->instansi_id = null;
             }
-            if($request->hasFile('document')){
+            if ($request->hasFile('document')) {
                 $req = $request->file('document');
-                $file = rand().'.'.$req->getClientOriginalExtension();
-                $req->move(public_path('uploads/aset/'),$file);
+                $file = rand() . '.' . $req->getClientOriginalExtension();
+                $req->move(public_path('uploads/aset/'), $file);
                 $data->document = $file;
             }
 
@@ -148,14 +130,11 @@ class AsetController extends Controller
 
             DB::commit();
 
-            return redirect('admin/aset/'.$data->id)->with('success', 'Data berhasil ditambah');
-        }
-        catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-        {
+            return redirect('admin/aset/' . $data->id)->with('success', 'Data berhasil ditambah');
+        } catch (\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e) {
             DB::rollback();
             return redirect()->back()->with('danger', 'Data gagal ditambah');
         }
-
     }
 
     /**
@@ -166,10 +145,9 @@ class AsetController extends Controller
      */
     public function show($id)
     {
+        $data['data_edit'] = Aset::where('id', $id)->first();
 
-        $data['data_edit'] = Aset::where('id',$id)->first();
-
-        $data['instansi'] = Instansi::where('id',$data['data_edit']->instansi_id)->first();
+        $data['instansi'] = Instansi::where('id', $data['data_edit']->instansi_id)->first();
 
         $data['barang'] = Barang::findOrFail($data['data_edit']->barang_id);
         $data['user'] = User::findOrFail($data['data_edit']->created_by);
@@ -185,10 +163,9 @@ class AsetController extends Controller
      */
     public function edit($id)
     {
-
-        $data['data_edit'] = Aset::where('id',$id)->first();
-        $data['instansi'] = Instansi::where('status',1)->orderBy('name')->pluck('name','id');
-        $data['barang'] = Barang::where('status',1)->pluck('name','id');
+        $data['data_edit'] = Aset::where('id', $id)->first();
+        $data['instansi'] = Instansi::where('status', 1)->orderBy('name')->pluck('name', 'id');
+        $data['barang'] = Barang::where('status', 1)->pluck('name', 'id');
         return view('admin.aset.edit', $data);
     }
 
@@ -202,14 +179,13 @@ class AsetController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'barang_id'   => 'required',
-            'number'      => 'nullable',
+            'barang_id' => 'required',
+            'number' => 'nullable',
             'spesifikasi' => 'required',
-            'name'        => 'required',
+            'name' => 'required',
         ]);
         DB::beginTransaction();
-        try
-        {
+        try {
             $data = Aset::findOrFail($id);
             $data->name = $request->name;
             $data->barang_id = $request->barang_id;
@@ -217,15 +193,15 @@ class AsetController extends Controller
             $data->keterangan = $request->keterangan;
             $data->kondisi = $request->kondisi;
 
-            if($request->kondisi == "Pinjam/Sewa"){
+            if ($request->kondisi == 'Pinjam/Sewa') {
                 $data->instansi_id = $request->instansi_id;
-            }else{
+            } else {
                 $data->instansi_id = null;
             }
-            if($request->hasFile('document')){
+            if ($request->hasFile('document')) {
                 $req = $request->file('document');
-                $file = rand().'.'.$req->getClientOriginalExtension();
-                $req->move(public_path('uploads/aset/'),$file);
+                $file = rand() . '.' . $req->getClientOriginalExtension();
+                $req->move(public_path('uploads/aset/'), $file);
                 $data->document = $file;
             }
 
@@ -235,13 +211,10 @@ class AsetController extends Controller
             DB::commit();
 
             return redirect('admin/aset')->with('success', 'Data berhasil dirubah');
-        }
-        catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-        {
+        } catch (\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e) {
             DB::rollback();
             return redirect()->back()->with('danger', 'Data gagal dirubah');
         }
-
     }
 
     /**
@@ -252,23 +225,18 @@ class AsetController extends Controller
      */
     public function destroy($id)
     {
-      DB::beginTransaction();
-      try
-      {
-          $data = Aset::findOrFail($id);
-          $data->status = 0;
-          $data->save();
+        DB::beginTransaction();
+        try {
+            $data = Aset::findOrFail($id);
+            $data->status = 0;
+            $data->save();
 
-          DB::commit();
+            DB::commit();
 
-          return redirect('admin/aset')->with('success', 'Data berhasil dihapus');
-      }
-      catch(\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e)
-      {
-          DB::rollback();
-          return redirect()->back()->with('danger', 'Data gagal dihapus');
-      }
+            return redirect('admin/aset')->with('success', 'Data berhasil dihapus');
+        } catch (\Yajra\Pdo\Oci8\Exceptions\Oci8Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('danger', 'Data gagal dihapus');
+        }
     }
-
-
 }

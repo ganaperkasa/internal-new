@@ -51,11 +51,13 @@ class ProjectController extends Controller
                 ->addColumn('action', function($data){
                     $edit = '<a href="'.route('project.edit', $data->id).'" class="btn btn-primary btn-sm mb-1">Ubah</a>';
                     $detail = '<a href="'.route('project.show', $data->id).'" class="btn btn-success btn-sm mb-1">Detail</a>';
+
                     $delete = '<form method="POST" action="'.route('project.destroy', $data->id).'" style="display:inline-block;">'
-                        . csrf_field()
-                        . method_field('DELETE')
-                        . '<button type="submit" class="btn btn-danger btn-sm mb-1" onclick="return confirm(\'Hapus Pekerjaan '.$data->name.'?\')">Hapus</button>'
-                        . '</form>';
+                            . csrf_field()
+                            . method_field('DELETE')
+                            . '<button type="submit" class="btn btn-danger btn-sm dt-btn" data-swa-text="Hapus Pekerjaan '.$data->name.'?">Hapus</button>'
+                            . '</form>';
+
                     return $edit . ' ' . $detail . ' ' . $delete;
                 })
                 ->editColumn('start', fn($data) => tglIndo($data->start))
@@ -174,7 +176,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'instansi_id' => 'required',
             'name' => 'required',
             'start' => 'required',
