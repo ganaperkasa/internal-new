@@ -157,7 +157,7 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col-sm-12 text-end">
-                        <a href="{{ URL::previous() }}" class="btn-shadow mr-3 btn btn-warning">Kembali</a>
+                        <a href="{{ route('cuti.index') }}" class="btn-shadow mr-3 btn btn-warning">Kembali</a>
                         {{-- {!! Form::button('Simpan', [
                         'class' => 'btn btn-success simpan',
                         'type' => 'submit',
