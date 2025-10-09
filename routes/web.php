@@ -11,6 +11,13 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\AsetController;
 use App\Http\Controllers\Marketing\VisitController;
 use App\Http\Controllers\Marketing\ContactController;
+use App\Http\Controllers\Master\SettingController;
+use App\Http\Controllers\Master\BarangController;
+use App\Http\Controllers\Master\DocumentController;
+use App\Http\Controllers\Master\InstansiController;
+use App\Http\Controllers\Master\JabatanController;
+use App\Http\Controllers\Master\DivisiController;
+use App\Http\Controllers\Master\UserController;
 
 
 
@@ -51,6 +58,18 @@ Route::prefix('marketing')->group(function() {
     Route::resource('contact', ContactController::class);
 });
 
+Route::prefix('master')->group( function()
+{
+  Route::resource('setting', SettingController::class);
+  Route::resource('barang', BarangController::class);
+  Route::resource('document', DocumentController::class);
+  Route::resource('instansi', InstansiController::class);
+  Route::resource('jabatan', JabatanController::class);
+  Route::resource('divisi', DivisiController::class);
+    Route::get('user/password/{id}', [UserController::class, 'password']);
+  Route::post('user/password', [UserController::class, 'updatePassword'] );
+  Route::resource('user', UserController::class);
+});
 // Route::group(    ['prefix' => 'admin','middleware' => ['auth', 'role:5,6'],],function () {
 //         Route::resource('aset', AsetController::class);
 //         Route::resource('surat', SuratController::class);
