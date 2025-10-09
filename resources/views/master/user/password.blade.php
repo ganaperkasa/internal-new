@@ -29,7 +29,11 @@
           </div>
       @endif
 
-      {!! Form::open(['url' => url('master/user/password'),'method'=>'POST','enctype' => 'multipart/form-data']) !!}
+      {{-- {!! Form::open(['url' => url('master/user/password'),'method'=>'POST','enctype' => 'multipart/form-data']) !!} --}}
+        <form method="POST" action="{{ route('user.password.update', $data_edit->id) }}" enctype="multipart/form-data">
+    @csrf
+
+
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Nama</label>
               <div class="col-sm-8">
@@ -46,23 +50,27 @@
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Password</label>
               <div class="col-sm-8">
-                {!! Form::password('password', ['class' => 'form-control', 'id' => 'password'] ) !!}
+                {{-- {!! Form::password('password', ['class' => 'form-control', 'id' => 'password'] ) !!} --}}
+                <input type="password" name="password" class="form-control" id="password">
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Ulangi Password</label>
               <div class="col-sm-8">
-                {!! Form::password('password_confirmation', ['class' => 'form-control', 'id' => 'password_confirmation'] ) !!}
+                {{-- {!! Form::password('password_confirmation', ['class' => 'form-control', 'id' => 'password_confirmation'] ) !!} --}}
+                <input type="password" name="password_confirmation" class="form-control" id="password_confirmation">
               </div>
           </div>
 
 
           <div class="position-relative row form-check">
               <div class="col-sm-10 offset-sm-2">
-                  {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah Password']) !!}
+                  {{-- {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah Password']) !!} --}}
+                  <button class="btn btn-secondary simpan" type="submit" data-swa-text="Merubah Password">Simpan</button>
               </div>
           </div>
-      {!! Form::close() !!}
+      {{-- {!! Form::close() !!} --}}
+      </form>
   </div>
 </div>
 @endsection

@@ -66,8 +66,8 @@ Route::prefix('master')->group( function()
   Route::resource('instansi', InstansiController::class);
   Route::resource('jabatan', JabatanController::class);
   Route::resource('divisi', DivisiController::class);
-    Route::get('user/password/{id}', [UserController::class, 'password']);
-  Route::post('user/password', [UserController::class, 'updatePassword'] );
+    Route::get('user/password/{id}', [UserController::class, 'password'])->name('user.password');
+  Route::post('user/password', [UserController::class, 'updatePassword'] )->name('user.password.update');
   Route::resource('user', UserController::class);
 });
 // Route::group(    ['prefix' => 'admin','middleware' => ['auth', 'role:5,6'],],function () {
