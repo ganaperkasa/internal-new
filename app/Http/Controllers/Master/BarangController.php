@@ -72,7 +72,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
         DB::beginTransaction();
@@ -126,7 +126,7 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
         DB::beginTransaction();

@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Ubah Barang
-            
+
           </div>
       </div>
     </div>
@@ -28,25 +28,31 @@
               @endforeach
           </div>
       @endif
-      {!! Form::model($data_edit, [
+      {{-- {!! Form::model($data_edit, [
           'method' => 'PATCH',
           'url' => ['master/barang', $data_edit->id],
           'enctype' => 'multipart/form-data'
-      ]) !!}
+      ]) !!} --}}
+        <form method="POST" action="{{ url('master/barang/'.$data_edit->id) }}" enctype="multipart/form-data">
+            @csrf
+            @method('PATCH')
 
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Nama Barang</label>
               <div class="col-sm-8">
-                {!! Form::text('name', null, ['class' => 'form-control'] ) !!}
+                {{-- {!! Form::text('name', null, ['class' => 'form-control'] ) !!} --}}
+                <input type="text" name="name" class="form-control" value="{{ old('name', $data_edit->name) }}">
               </div>
           </div>
-         
+
           <div class="position-relative row form-check">
               <div class="col-sm-10 offset-sm-2">
-                  {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah Barang']) !!}
+                  {{-- {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah Barang']) !!} --}}
+                    <button class="btn btn-secondary simpan" type="submit" data-swa-text="Merubah Barang">Simpan</button>
               </div>
           </div>
-      {!! Form::close() !!}
+      {{-- {!! Form::close() !!} --}}
+        </form>
   </div>
 </div>
 @endsection
