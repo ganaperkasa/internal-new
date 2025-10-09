@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('halaman-verifikasi/{id}', [CutiController::class, 'halamanTerima'])->name('halaman.cuti');
     Route::get('halaman-print/{id}', [CutiController::class, 'print'])->name('halaman.print');
     Route::get('halaman-preview/{id}', [CutiController::class, 'preview'])->name('halaman.preview');
-    Route::get('verifikasi-cuti/{id}', [CutiController::class, 'terimaCuti'])->name('terima.cuti');
+    Route::post('verifikasi-cuti/{id}', [CutiController::class, 'terimaCuti'])->name('terima.cuti');
     Route::resource('daily', DailyController::class);
     Route::resource('cuti', CutiController::class);
     Route::resource('cuti-bersama', CutiBersamaController::class);
