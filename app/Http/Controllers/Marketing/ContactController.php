@@ -71,7 +71,7 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'instansi_id' => 'required|max:200',
             'nama' => 'required',
             'telp_1' => 'required',

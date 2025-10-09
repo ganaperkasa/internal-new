@@ -59,7 +59,7 @@
             // ajax: '{!! url('marketing/contact') !!}',
             ajax: "{{ url('marketing/contact') }}",
             columns: [
-                {data: 'instansi', name: 'i.name'},   // 👈 ubah ini
+                {data: 'instansi', name: 'i.name'},   
                 {data: 'nama', name: 'k.nama'},
                 {data: 'telp_1', name: 'k.telp_1'},
                 {data: 'telp_2', name: 'k.telp_2'},
