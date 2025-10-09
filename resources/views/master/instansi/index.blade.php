@@ -39,15 +39,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th class="">Nama</th>
-              <th class="">Jenis</th>
-              <th class="">Alamat</th>
-              <th class="">Website</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -63,13 +54,13 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! url('master/instansi') !!}',
+            ajax : "{{ url('master/instansi') }}",
             columns: [
-              {data: 'name', name: 'name'},
-              {data: 'type', name: 'type'},
-              {data: 'address', name: 'address'},
-              {data: 'website', name: 'website'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
+              {data: 'name', name: 'i.name'},
+              {data: 'type', name: 'i.type'},
+              {data: 'address', name: 'i.address'},
+              {data: 'website', name: 'i.website'},
+                {data: 'action', name: 'action', orderable: false, searchable: false, sClass: 'text-center' }
             ],
             initComplete: function () {
                 this.api().columns().every(function (index) {

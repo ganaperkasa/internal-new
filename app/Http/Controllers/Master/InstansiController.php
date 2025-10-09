@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\Master;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use App\Models\Instansi;
 use App\Models\Type;
 use App\Models\Kontak;
 use Auth;
-use DB,DataTables;
+
 
 class InstansiController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:5,6');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    //     $this->middleware('role:5,6');
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +30,22 @@ class InstansiController extends Controller
 
         if($request->ajax())
         {
-            $query = DB::select("select i.* from m_instansi i where i.status = 1 ");
+            
+            $query = DB::table('m_instansi as i')->where ('i.status', 1);
             $datatables = DataTables::of($query)
                 ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                        '<a href="'.url('master/instansi/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'instansi.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Instansi '.$data->name.'?" >Hapus</button>'
-                        .\Form::close();
+                    $editUrl = url('master/instansi/'.$data->id.'/edit');
+                    $delete = route('instansi.destroy', $data->id);
+                    $html =
+
+                        '<a href="'.$editUrl.'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>
+                        <form action="'.$delete.'" method="POST" style="display:inline-block;">
+                            '.csrf_field().method_field('DELETE').'
+                            <button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn"
+                                data-swa-text="Hapus Instansi '.$data->name.'?">
+                                Hapus
+                            </button>
+                        </form>';
                     return $html;
                 })
                 ->rawColumns(['action']);
