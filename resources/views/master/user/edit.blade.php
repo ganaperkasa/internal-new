@@ -29,54 +29,87 @@
           </div>
       @endif
 
-      {!! Form::model($data_edit, [
+      {{-- {!! Form::model($data_edit, [
           'method' => 'PATCH',
           'url' => ['master/user', $data_edit->id],
           'enctype' => 'multipart/form-data'
-      ]) !!}
+      ]) !!} --}}
+        <form method="POST" action="{{ route('user.update', $data_edit->id) }}" enctype="multipart/form-data">
+          @csrf
+          @method('PATCH')
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Email</label>
               <div class="col-sm-8">
-                {!! Form::email('email', null, ['class' => 'form-control', 'id' => 'email'] ) !!}
+                {{-- {!! Form::email('email', null, ['class' => 'form-control', 'id' => 'email'] ) !!} --}}
+                <input type="email" name="email" class="form-control" value="{{ $data_edit->email }}" required>
+              </div>
+          </div>
+          <div class="position-relative row form-group">
+            <label class="col-sm-3 col-form-label">Password</label>
+              <div class="col-sm-8">
+                {{-- {!! Form::password('password', ['class' => 'form-control', 'id' => 'password'] ) !!} --}}
+                <input type="password" name="password" class="form-control" id="password">
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Nama</label>
               <div class="col-sm-8">
-                {!! Form::text('name', null, ['class' => 'form-control'] ) !!}
+                {{-- {!! Form::text('name', null, ['class' => 'form-control'] ) !!} --}}
+                <input type="text" name="name" class="form-control" value="{{ $data_edit->name }}" required>
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Tanggal Masuk</label>
               <div class="col-sm-8">
-                {!! Form::date('tgl_msk', null, ['class' => 'form-control'] ) !!}
+                {{-- {!! Form::date('tgl_msk', null, ['class' => 'form-control'] ) !!} --}}
+                <input type="date" name="tgl_msk" class="form-control" value="{{ $data_edit->tgl_msk }}" required>
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Level</label>
               <div class="col-sm-8">
-                {{ Form::select('role_id', $role, null, ['class' => 'form-control select2']) }}
+                {{-- {{ Form::select('role_id', $role, null, ['class' => 'form-control select2']) }} --}}
+                <select name="role_id" class="form-control select2" required>
+                  <option value="">-- Pilih Level --</option>
+                  @foreach ($role as $id => $name)
+                    <option value="{{ $id }}" {{ $data_edit->role_id == $id ? 'selected' : '' }}>{{ $name }}</option>
+                  @endforeach
+                </select>
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Jabatan</label>
               <div class="col-sm-8">
-                {{ Form::select('jabatan_id', $jabatan, null, ['class' => 'form-control select2']) }}
+                {{-- {{ Form::select('jabatan_id', $jabatan, null, ['class' => 'form-control select2']) }} --}}
+                <select name="jabatan_id" class="form-control select2" required>
+                  <option value="">-- Pilih Jabatan --</option>
+                  @foreach ($jabatan as $id => $name)
+                    <option value="{{ $id }}" {{ $data_edit->jabatan_id == $id ? 'selected' : '' }}>{{ $name }}</option>
+                  @endforeach
+                </select>
               </div>
           </div>
           <div class="position-relative row form-group">
             <label class="col-sm-3 col-form-label">Divisi</label>
               <div class="col-sm-8">
-                {{ Form::select('divisi_id', $divisi, null, ['class' => 'form-control select2']) }}
+                {{-- {{ Form::select('divisi_id', $divisi, null, ['class' => 'form-control select2']) }} --}}
+                <select name="divisi_id" class="form-control select2" required>
+                  <option value="">-- Pilih Divisi --</option>
+                  @foreach ($divisi as $id => $name)
+                    <option value="{{ $id }}" {{ $data_edit->divisi_id == $id ? 'selected' : '' }}>{{ $name }}</option>
+                  @endforeach
+                </select>
               </div>
           </div>
 
           <div class="position-relative row form-check">
               <div class="col-sm-10 offset-sm-2">
-                  {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah User']) !!}
+                  {{-- {!! Form::button('Simpan', ['class' => 'btn btn-secondary simpan', 'type' => 'submit', 'data-swa-text' => 'Merubah User']) !!} --}}
+                  <button class="btn btn-secondary simpan" type="submit" data-swa-text="Merubah User">Simpan</button>
               </div>
           </div>
-      {!! Form::close() !!}
+      {{-- {!! Form::close() !!} --}}
+        </form>
   </div>
 </div>
 @endsection
