@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Master Jabatan
-            
+
           </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
             Data
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            <a href="{{ url('master/jabatan/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('jabatan.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
     <div class="card-body">
@@ -36,12 +36,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th class="">Nama</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -57,9 +51,9 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! url('master/jabatan') !!}',
+            ajax: "{{ route('jabatan.index') }}",
             columns: [
-              {data: 'name', name: 'name'},
+              {data: 'name', name: 'i.name'},
                 {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
             ],
             initComplete: function () {

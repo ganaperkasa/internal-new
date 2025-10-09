@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\Master;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
 use App\Models\Type;
 use App\Models\Kontak;
 use Auth;
-use DB,DataTables;
+
 
 class JabatanController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:5');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    //     $this->middleware('role:5');
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +30,19 @@ class JabatanController extends Controller
 
         if($request->ajax())
         {
-            $query = DB::select("select i.* from m_jabatan i where i.status = 1 ");
+            // $query = DB::select("select i.* from m_jabatan i where i.status = 1 ");
+            $query = DB::table('m_jabatan as i')->where ('i.status', 1);
             $datatables = DataTables::of($query)
                 ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                        '<a href="'.url('master/jabatan/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'jabatan.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger dt-btn" data-swa-text="Hapus Jabatan '.$data->name.'?" >Hapus</button>'
-                        .\Form::close();
+                    $html = '
+                        <a href="'.url('master/jabatan/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary" >Ubah</a>
+                        <form action="'.route('jabatan.destroy', $data->id).'" method="POST" style="display:inline-block;">
+                            '.csrf_field().method_field('DELETE').'
+                            <button type="submit" class="mb-2 mr-2 btn btn-danger dt-btn"
+                                data-swa-text="Hapus Jabatan '.$data->name.'?">
+                                Hapus
+                            </button>
+                        </form>';
                     return $html;
                 })
                 ->rawColumns(['action']);
@@ -65,9 +70,10 @@ class JabatanController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
+
         DB::beginTransaction();
         try
         {
@@ -119,7 +125,7 @@ class JabatanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
         DB::beginTransaction();
