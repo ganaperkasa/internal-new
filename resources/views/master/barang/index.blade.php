@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Master Barang
-            
+
           </div>
       </div>
     </div>
@@ -36,12 +36,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th class="">Nama</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>
@@ -54,40 +48,35 @@
 <link rel="stylesheet" type="text/css" href="{{url('/assets/datatables/jquery.dataTables.css') }}" />
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#table1").DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{!! url('master/barang') !!}',
-            columns: [
-              {data: 'name', name: 'name'},
-                {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
-            ],
-            initComplete: function () {
-                this.api().columns().every(function (index) {
-                    var column = this;
-                    var colCount = this.columns().nodes().length - 1;
-                    if(index !== colCount){
-                        var input = document.createElement("input");
-                        $(input).addClass('form-control');
-                        // if(index == 1)
-                        // {
-                        //     $(input).attr('type', 'date');
-                        // }
-                        $(input).appendTo($(column.footer()).empty())
-                        .on('change', function () {
-                            column.search($(this).val(), false, false, true).draw();
-                        });
+    $("#table1").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('master/barang') }}",
+        columns: [
+            {data: 'name', name: 'i.name'},
+            {data: 'action', name: 'action', orderable: false, searchable: false, sClass: 'text-center'}
+        ],
+        initComplete: function () {
+            this.api().columns().every(function (index) {
+                var column = this;
+                var colCount = this.columns().nodes().length - 1;
+                if(index !== colCount){
+                    var input = document.createElement("input");
+                    $(input).addClass('form-control');
+                    $(input).appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        column.search($(this).val(), false, false, true).draw();
+                    });
+                }
+            });
+            SweetAlert2Plugin.init();
+        },
+        drawCallback: function(settings) {
+            SweetAlert2Plugin.init();
+        }
+    })
+});
 
-                    }
-
-                });
-                SweetAlert2Plugin.init();
-            },
-            drawCallback: function( settings ) {
-              SweetAlert2Plugin.init();
-            }
-        });
-    });
 </script>
 
 @endpush
