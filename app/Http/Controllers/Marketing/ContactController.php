@@ -139,7 +139,7 @@ class ContactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'instansi_id' => 'required|max:200',
             'nama' => 'required',
             'telp_1' => 'required',
