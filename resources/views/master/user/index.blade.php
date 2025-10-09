@@ -33,15 +33,6 @@
             <th> Aksi </th>
           </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th class="">Email</th>
-              <th class="">Nama</th>
-              <th class="">Level</th>
-                <th class="">Jabatan</th>
-                <th class="text-center" width="150">Aksi</th>
-            </tr>
-        </tfoot>
       </table>
     </div>
 </div>

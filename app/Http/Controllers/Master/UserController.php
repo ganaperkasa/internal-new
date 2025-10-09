@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Divisi;
-use App\User;
+use App\Models\User;
 use App\Models\Role;
 use App\Models\Jabatan;
 use Auth;
@@ -14,11 +14,11 @@ use DB,DataTables;
 class UserController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:2,3');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    //     $this->middleware('role:2,3');
+    // }
 
     /**
      * Display a listing of the resource.
@@ -30,20 +30,25 @@ class UserController extends Controller
 
         if($request->ajax())
         {
-            $query = DB::select("select u.*, j.name as jabatan, r.name as role from users u
-                                    left join m_jabatan j on j.id = u.jabatan_id
-                                    left join roles r on r.id = u.role_id
-                                    where u.status =1 ");
+            // $query = DB::select("select u.*, j.name as jabatan, r.name as role from users u
+            //                         left join m_jabatan j on j.id = u.jabatan_id
+            //                         left join roles r on r.id = u.role_id
+            //                         where u.status =1 ");
+            $query = DB::table('users')->leftJoin('m_jabatan', 'm_jabatan.id', '=', 'users.jabatan_id')
+            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->select('users.*', 'm_jabatan.name as jabatan', 'roles.name as role')
+            ->where('users.status', 1)->get();
+
             $datatables = DataTables::of($query)
                 ->addColumn('action', function ($data) {
-                    $html = '';
-                    $html .=
-                    '<a href="'.url('master/user/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary btn-sm" >Ubah</a>'.'&nbsp;'.
-                        '<a href="'.url('master/user/password/'.$data->id.'').'" class="mb-2 mr-2 btn btn-secondary btn-sm" >Password</a>'.
-                        '&nbsp;'
-                        .\Form::open([ 'method'  => 'delete', 'route' => [ 'user.destroy', $data->id ], 'style' => 'display: inline-block;' ]).
-                        '<button class="mb-2 mr-2 btn btn-danger btn-sm dt-btn" data-swa-text="Hapus User '.$data->name.'?" >Hapus</button>'
-                        .\Form::close();
+                    $html = '
+                    <a href="'.url('master/user/'.$data->id.'/edit').'" class="mb-2 mr-2 btn btn-primary btn-sm" >Ubah</a>
+                        <a href="'.url('master/user/password/'.$data->id.'').'" class="mb-2 mr-2 btn btn-secondary btn-sm" >Password</a>
+                        <form action="'.route('user.destroy', $data->id).'" method="POST" style="display:inline-block;">
+                            '.csrf_field().method_field('DELETE').'
+                            <button type="submit" class="mb-2 mr-2 btn btn-danger btn-sm dt-btn" data-swa-text="Hapus User '.$data->name.'?" >Hapus</button>
+                        </form>
+                    ';
                     return $html;
                 })
                 ->rawColumns(['action']);
@@ -60,9 +65,9 @@ class UserController extends Controller
     public function create()
     {
 
-        $data['jabatan'] = Jabatan::where('status', 1)->pluck('name','id');  
-        $data['role'] = Role::where('status', 1)->pluck('name','id');  
-        $data['divisi'] = Divisi::pluck('name','id');  
+        $data['jabatan'] = Jabatan::where('status', 1)->pluck('name','id');
+        $data['role'] = Role::where('status', 1)->pluck('name','id');
+        $data['divisi'] = Divisi::pluck('name','id');
         return view('master.user.create',$data);
     }
 
@@ -75,7 +80,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
             'email' => 'required|email|unique:users|max:150',
             'password' => 'required|confirmed',
@@ -127,8 +132,8 @@ class UserController extends Controller
 
         $data['data_edit'] = User::where('id',$id)->first();
         $data['jabatan'] = Jabatan::where('status', 1)->pluck('name','id');
-        $data['role'] = Role::where('status', 1)->pluck('name','id');  
-        $data['divisi'] = Divisi::pluck('name','id');  
+        $data['role'] = Role::where('status', 1)->pluck('name','id');
+        $data['divisi'] = Divisi::pluck('name','id');
         return view('master.user.edit', $data);
     }
 
@@ -141,7 +146,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
         DB::beginTransaction();
