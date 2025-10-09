@@ -18,7 +18,9 @@
         </div>
     </div>
     <div class="main-card mb-3 card">
-        {!! Form::open(['route' => 'cuti-bersama.store', 'enctype' => 'multipart/form-data']) !!}
+        {{-- {!! Form::open(['route' => 'cuti-bersama.store', 'enctype' => 'multipart/form-data']) !!} --}}
+        <form action="{{ route('cuti-bersama.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
         <div class="card-body">
             @if ($errors->any())
                 <div class="alert alert-dark">
@@ -109,14 +111,23 @@
             <div class="row">
                 <div class="col-sm-12 text-end">
                     <a href="{{ URL::previous() }}" class="btn-shadow mr-3 btn btn-warning">Kembali</a>
-                    {!! Form::button('Simpan', [
+                    {{-- {!! Form::button('Simpan', [
                         'class' => 'btn btn-success simpan',
                         'type' => 'submit',
                         'data-swa-text' => 'Menambahkan Cuti',
-                    ]) !!}
+                    ]) !!} --}}
+                     <form>
+                        <button
+                            class="btn btn-success simpan"
+                            type="submit"
+                            data-swa-text="Menambahkan Cuti">
+                            Simpan
+                        </button>
+                    </form>
                 </div>
             </div>
-            {!! Form::close() !!}
+            {{-- {!! Form::close() !!} --}}
+            <form>
         </div>
     </div>
 @endsection

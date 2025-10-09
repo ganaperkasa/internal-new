@@ -58,7 +58,7 @@ class CutiBersamaController extends Controller
         if ($count > 0 ) {
            return redirect()->back()->with('dangerss', 'Pegawai masih memiliki cuti yang belum di verifikasi');
         }
-        $this->validate($request, [
+        $request->validate([
             'file' => 'required|mimes:pdf',
             'user_cuti' => 'required|exists:users,id',
             'user_setuju' => 'required|exists:users,id',
@@ -67,7 +67,7 @@ class CutiBersamaController extends Controller
             'keterangan' => 'required',
             'tanggal.*' => 'required'
         ]);
-        
+
         DB::beginTransaction();
         try {
 
@@ -82,17 +82,17 @@ class CutiBersamaController extends Controller
 
                 //     $tanggal['pawal'] = $tanggalMasuk->year(date('Y')-1)->format('Y-m-d');
                 //     $tanggal['pakhir'] = $date;
-    
+
                 //     $pakai = CutiDetail::whereHas('cuti', function ($q) use($user) {
                 //         $q->where('user_cuti', $user->id)->where('status' ,'1');
                 //     })->whereDate('tanggal_cuti', '>=', $tanggal['pawal'])->whereDate('tanggal_cuti' ,'<=', $tanggal['pakhir'])->where('status' ,'1')->count();
-                    
-                    
+
+
                 // }else{
-    
+
                 //     $tanggal['pawal'] = $date;
                 //     $tanggal['pakhir'] = $tanggalMasuk->year(date('Y')+1)->format('Y-m-d');
-    
+
                 //     $pakai = CutiDetail::whereHas('cuti', function ($q) use($user) {
                 //         $q->where('user_cuti', $user->id)->where('status' ,'1');
                 //     })->whereDate('tanggal_cuti', '>=', $tanggal['pawal'])->whereDate('tanggal_cuti' ,'<=', $tanggal['pakhir'])->where('status' ,'1')->count();
@@ -115,7 +115,7 @@ class CutiBersamaController extends Controller
                     'file_terima' => Storage::disk('public_uploads')->put('file', $request->file),
                     'status' => '1'
                 ]);
-    
+
                 foreach ($request->tanggal as $value1) {
                     CutiDetail::create([
                         'cuti_id' => $cuti->id,
