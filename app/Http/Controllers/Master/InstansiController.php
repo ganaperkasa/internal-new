@@ -30,7 +30,7 @@ class InstansiController extends Controller
 
         if($request->ajax())
         {
-            
+
             $query = DB::table('m_instansi as i')->where ('i.status', 1);
             $datatables = DataTables::of($query)
                 ->addColumn('action', function ($data) {
@@ -73,7 +73,7 @@ class InstansiController extends Controller
     public function store(Request $request)
     {
 
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required|max:200',
         ]);
         DB::beginTransaction();
