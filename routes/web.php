@@ -19,8 +19,6 @@ use App\Http\Controllers\Master\JabatanController;
 use App\Http\Controllers\Master\DivisiController;
 use App\Http\Controllers\Master\UserController;
 
-
-
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -53,28 +51,25 @@ Route::prefix('admin')->group(function () {
     Route::resource('aset', AsetController::class);
 });
 
-Route::prefix('marketing')->group(function() {
+Route::prefix('marketing')->group(function () {
     Route::get('visit/contact', [VisitController::class, 'contact']);
     Route::post('get/contact', [VisitController::class, 'contact']);
     Route::resource('visit', VisitController::class);
     Route::resource('contact', ContactController::class);
 });
 
-Route::prefix('master')->group( function()
-{
-  Route::resource('setting', SettingController::class);
-  Route::resource('barang', BarangController::class);
-  Route::resource('document', DocumentController::class);
-  Route::resource('instansi', InstansiController::class);
-  Route::resource('jabatan', JabatanController::class);
-  Route::resource('divisi', DivisiController::class);
+Route::prefix('master')->group(function () {
+    Route::resource('setting', SettingController::class);
+    Route::resource('barang', BarangController::class);
+    Route::resource('document', DocumentController::class);
+    Route::resource('instansi', InstansiController::class);
+    Route::resource('jabatan', JabatanController::class);
+    Route::resource('divisi', DivisiController::class);
     Route::get('user/password/{id}', [UserController::class, 'password'])->name('user.password');
-  Route::post('user/password', [UserController::class, 'updatePassword'] )->name('user.password.update');
-  Route::resource('user', UserController::class);
+    Route::post('user/password', [UserController::class, 'updatePassword'])->name('user.password.update');
+    Route::resource('user', UserController::class);
 });
 // Route::group(    ['prefix' => 'admin','middleware' => ['auth', 'role:5,6'],],function () {
 //         Route::resource('aset', AsetController::class);
 //         Route::resource('surat', SuratController::class);
 //     });
-
-
