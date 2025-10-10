@@ -168,6 +168,7 @@ class CutiController extends Controller
         $cuti = Cuti::where('user_cuti', $request->user_cuti)->where('status', '0')->count();
 
         if ($cuti != 0 ) {
+             DB::rollBack();
            return redirect()->back()->with('dangerss', 'Pegawai masih memiliki cuti yang belum di verifikasi');
         }
 
