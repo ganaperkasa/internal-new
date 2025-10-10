@@ -18,8 +18,8 @@
           </div>
       </div>
       <div class="page-title-actions">
-        <a href="{{ url('admin/project') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
-        <a href="{{ url('admin/project/'.$data_edit->id.'/edit') }}" class="btn-shadow mr-3 btn btn-info">Ubah</a>
+        <a href="{{ route('project.index') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
+        <a href="{{ route('project.edit', $data_edit->id) }}" class="btn-shadow mr-3 btn btn-info">Ubah</a>
       </div>
     </div>
 </div>
@@ -34,7 +34,7 @@
           </div>
       @endif
 
-    
+
 
           <div class="position-relative row form-group">
             <label class="col-sm-3">Perusahaan</label>

@@ -25,7 +25,7 @@
             Data
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            <a href="{{ url('daily/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('daily.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
     <div class="card-body">

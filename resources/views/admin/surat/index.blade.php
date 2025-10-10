@@ -33,7 +33,7 @@
         </div>
         <div class="btn-actions-pane-right text-capitalize">
 
-            <a href="{{ url('admin/surat/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('surat.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
     <div class="card-body">

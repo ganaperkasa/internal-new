@@ -18,8 +18,8 @@
           </div>
       </div>
       <div class="page-title-actions">
-        <a href="{{ url('admin/surat') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
-        <a href="{{ url('admin/surat/'.$data_edit->id.'/edit') }}" class="btn-shadow mr-3 btn btn-info">Ubah</a>
+        <a href="{{ route('surat.index') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
+        <a href="{{ route('surat.edit', $data_edit->id) }}" class="btn-shadow mr-3 btn btn-info">Ubah</a>
       </div>
     </div>
 </div>
@@ -81,7 +81,7 @@
                 <b>{{ $user->name }}</b>
               </div>
           </div>
-  
+
   </div>
 </div>
 @endsection

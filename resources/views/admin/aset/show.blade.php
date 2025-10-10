@@ -18,7 +18,7 @@
           </div>
       </div>
       <div class="page-title-actions">
-        <a href="{{ url('admin/aset') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
+        <a href="{{ route('aset.index') }}" class="btn-shadow mr-3 btn btn-primary">Kembali</a>
       </div>
     </div>
 </div>
@@ -38,7 +38,7 @@
           'url' => ['asman', $data_edit->id],
           'enctype' => 'multipart/form-data'
       ]) !!} --}}
-       
+
 
           <div class="position-relative row form-group">
             <label class="col-sm-3">Nomor Aset</label>

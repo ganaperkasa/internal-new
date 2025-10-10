@@ -28,7 +28,7 @@
               @endforeach
           </div>
       @endif
-      <form action="{{ url('admin/surat/'.$data_edit->id) }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('surat.update', $data_edit->id) }}" method="POST" enctype="multipart/form-data">
           @csrf
           @method('PATCH')
 

@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ url('daily/' . $data_edit->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('daily.update', $data_edit->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
 

@@ -25,7 +25,7 @@
             Data
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            <a href="{{ url('marketing/contact/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('contact.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
 
     </div>
@@ -57,7 +57,7 @@
             processing: true,
             serverSide: true,
             // ajax: '{!! url('marketing/contact') !!}',
-            ajax: "{{ url('marketing/contact') }}",
+            ajax: "{{ route('contact.index') }}",
             columns: [
                 {data: 'instansi', name: 'i.name'},
                 {data: 'nama', name: 'k.nama'},

@@ -33,7 +33,7 @@
           'url' => ['admin/project', $data_edit->id],
           'enctype' => 'multipart/form-data'
       ]) !!} --}}
-       <form method="POST" action="{{ url('admin/project/'.$data_edit->id) }}" enctype="multipart/form-data">
+       <form method="POST" action="{{ route('project.update', $data_edit->id) }}" enctype="multipart/form-data">
           @csrf
           @method('PATCH')
           <div class="position-relative row form-group">

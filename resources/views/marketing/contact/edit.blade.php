@@ -30,7 +30,7 @@
           'url' => ['marketing/contact', $data_edit->id],
           'enctype' => 'multipart/form-data'
       ]) !!} --}}
-        <form method="POST" action="{{ url('marketing/contact/'.$data_edit->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('contact.update', $data_edit->id) }}" enctype="multipart/form-data">
           @csrf
           @method('PATCH')
         <div class="position-relative row form-group">

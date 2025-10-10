@@ -13,7 +13,7 @@
               </i>
           </div>
           <div>Daftar Kontak Pelanggan
-            
+
           </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
             <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
             Data
         </div>
-        
+
     </div>
     <div class="card-body">
       <table class="table table-hover table-striped table-bordered" id="table1">
@@ -63,7 +63,7 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! url('marketing/visit/contact') !!}',
+            ajax: "{{ route('contact.index') }}",
             columns: [
               {data: 'instansi', name: 'instansi'},
               {data: 'nama', name: 'nama'},

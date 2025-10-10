@@ -33,7 +33,7 @@
           'url' => ['marketing/visit', $data_edit->id],
           'enctype' => 'multipart/form-data'
       ]) !!} --}}
-       <form method="POST" action="{{ url('marketing/visit/'.$data_edit->id) }}" enctype="multipart/form-data">
+       <form method="POST" action="{{ route('visit.update', $data_edit->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
 
