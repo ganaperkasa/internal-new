@@ -33,6 +33,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/profil', [HomeController::class, 'profile'])->name('profil');
+    Route::post('/profil-update', [HomeController::class, 'profileUpdate'])->name('profil.update');
     Route::get('daily/report', [DailyController::class, 'report'])->name('daily.report');
     Route::get('data-user/{id}', [CutiController::class, 'getData']);
     Route::get('halaman-data', [CutiController::class, 'dataSemua'])->name('halaman.data');
