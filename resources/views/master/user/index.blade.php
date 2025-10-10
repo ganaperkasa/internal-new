@@ -17,7 +17,7 @@
           </div>
       </div>
       <div class="page-title-actions">
-        <a href="{{ url('master/user/create') }}" class="btn-shadow d-inline-flex align-items-center btn btn-success"><i class="fa fa-plus"></i> Tambah</a>
+        <a href="{{ route('user.create') }}" class="btn-shadow d-inline-flex align-items-center btn btn-success"><i class="fa fa-plus"></i> Tambah</a>
       </div>
     </div>
 </div>
@@ -48,7 +48,7 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! url('master/user') !!}',
+            ajax: "{{ route('master.user') }}",
             columns: [
               {data: 'email', name: 'email'},
               {data: 'name', name: 'name'},

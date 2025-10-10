@@ -30,7 +30,7 @@
       @endif
 
       {{-- {!! Form::open(['route' => 'barang.store','enctype' => 'multipart/form-data']) !!} --}}
-      <form method="POST" action="{{ url('master/barang') }}" enctype="multipart/form-data">
+      <form method="POST" action="{{ route('barang.store') }}" enctype="multipart/form-data">
           @csrf
 
           <div class="position-relative row form-group">

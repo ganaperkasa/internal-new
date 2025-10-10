@@ -25,7 +25,7 @@
             Data
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            <a href="{{ url('master/instansi/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('instansi.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
     <div class="card-body">
@@ -54,7 +54,7 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax : "{{ url('master/instansi') }}",
+            ajax : "{{ route('instansi') }}",
             columns: [
               {data: 'name', name: 'i.name'},
               {data: 'type', name: 'i.type'},

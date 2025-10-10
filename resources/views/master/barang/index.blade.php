@@ -25,7 +25,7 @@
             Data
         </div>
         <div class="btn-actions-pane-right text-capitalize">
-            <a href="{{ url('master/barang/create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
+            <a href="{{ route('master.barang.create') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">Tambah</a>
         </div>
     </div>
     <div class="card-body">
@@ -51,7 +51,7 @@
     $("#table1").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('master/barang') }}",
+        ajax: "{{ route('master.barang') }}",
         columns: [
             {data: 'name', name: 'i.name'},
             {data: 'action', name: 'action', orderable: false, searchable: false, sClass: 'text-center'}
