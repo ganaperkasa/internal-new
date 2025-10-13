@@ -54,7 +54,7 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax : "{{ route('instansi') }}",
+            ajax : "{{ route('instansi.index') }}",
             columns: [
               {data: 'name', name: 'i.name'},
               {data: 'type', name: 'i.type'},

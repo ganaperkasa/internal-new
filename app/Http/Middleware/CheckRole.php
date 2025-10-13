@@ -3,34 +3,26 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
     public function handle($request, Closure $next, ...$roles)
     {
-         $user = Auth::user();
 
-        // Kalau belum login
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect('login');
         }
 
-        // Kalau role_id = 1 (Superadmin) → akses semua
+        $user = Auth::user();
+
         if ($user->role_id == 1) {
             return $next($request);
         }
 
-        // Cek berdasarkan nama role (misalnya: 'Admin', 'Staf')
-        if (! in_array($user->role_id, $roles)) {
-            return redirect('home')->with('danger', 'Anda Tidak Punya Akses');
+        if (!in_array($user->jabatan_id, $roles)) {
+            return redirect()->route('home')->with('danger', 'Anda Tidak Punya Akses');
         }
 
         return $next($request);

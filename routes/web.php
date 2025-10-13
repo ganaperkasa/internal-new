@@ -18,6 +18,27 @@ use App\Http\Controllers\Master\InstansiController;
 use App\Http\Controllers\Master\JabatanController;
 use App\Http\Controllers\Master\DivisiController;
 use App\Http\Controllers\Master\UserController;
+use App\Http\Middleware\CheckRole;
+
+
+// Route::get('/debug-middleware', function () {
+//     $kernel = app('Illuminate\Contracts\Http\Kernel');
+//     dd($kernel->getRouteMiddleware());
+// });
+// Route::get('/debug-kernel', function () {
+//     $kernel = app(\App\Http\Kernel::class);
+
+
+//     $reflection = new \ReflectionClass($kernel);
+//     $property = $reflection->getProperty('routeMiddleware');
+//     $property->setAccessible(true);
+//     $routeMiddleware = $property->getValue($kernel);
+
+//     echo '<pre>';
+//     print_r($routeMiddleware);
+//     echo '</pre>';
+
+// });
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -34,42 +55,56 @@ Route::middleware('auth')->group(function () {
     Route::get('/profil', [HomeController::class, 'profile'])->name('profil');
     Route::post('/profil-update', [HomeController::class, 'profileUpdate'])->name('profil.update');
     Route::get('daily/report', [DailyController::class, 'report'])->name('daily.report');
+
     Route::get('data-user/{id}', [CutiController::class, 'getData']);
     Route::get('halaman-data', [CutiController::class, 'dataSemua'])->name('halaman.data');
     Route::get('halaman-verifikasi/{id}', [CutiController::class, 'halamanTerima'])->name('halaman.cuti');
     Route::get('halaman-print/{id}', [CutiController::class, 'print'])->name('halaman.print');
     Route::get('halaman-preview/{id}', [CutiController::class, 'preview'])->name('halaman.preview');
     Route::post('verifikasi-cuti/{id}', [CutiController::class, 'terimaCuti'])->name('terima.cuti');
+
     Route::resource('daily', DailyController::class);
     Route::resource('cuti', CutiController::class);
     Route::resource('cuti-bersama', CutiBersamaController::class);
-    // Route::resource('surat', SuratController::class);
-});
-Route::prefix('admin')->group(function () {
-    Route::resource('surat', SuratController::class);
-    Route::resource('project', ProjectController::class);
-    Route::resource('aset', AsetController::class);
+
+    Route::prefix('master')->group(function () {
+        // Route::resource('user', UserController::class);
+        Route::resource('divisi', DivisiController::class);
+    });
 });
 
-Route::prefix('marketing')->group(function () {
+Route::middleware(['auth', CheckRole::class . ':5'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::resource('aset', AsetController::class);
+    });
+    Route::prefix('master')->group(function () {
+        Route::resource('setting', SettingController::class);
+        Route::resource('barang', BarangController::class);
+        Route::resource('document', DocumentController::class);
+        Route::resource('jabatan', JabatanController::class);
+
+    });
+});
+
+Route::middleware(['auth',CheckRole::class . ':5,6'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::resource('project', ProjectController::class);
+        Route::resource('surat', SuratController::class);
+    });
+    Route::prefix('master')->group(function () {
+        Route::resource('instansi', InstansiController::class);
+    });
+});
+Route::middleware(['auth',CheckRole::class . ':6'])->prefix('marketing')->group(function () {
     Route::get('visit/contact', [VisitController::class, 'contact']);
     Route::post('get/contact', [VisitController::class, 'contact']);
     Route::resource('visit', VisitController::class);
     Route::resource('contact', ContactController::class);
 });
 
-Route::prefix('master')->group(function () {
-    Route::resource('setting', SettingController::class);
-    Route::resource('barang', BarangController::class);
-    Route::resource('document', DocumentController::class);
-    Route::resource('instansi', InstansiController::class);
-    Route::resource('jabatan', JabatanController::class);
-    Route::resource('divisi', DivisiController::class);
+Route::middleware(['auth', CheckRole::class . ':2,3'])->prefix('master')->group(function () {
     Route::get('user/password/{id}', [UserController::class, 'password'])->name('user.password');
     Route::post('user/password', [UserController::class, 'updatePassword'])->name('user.password.update');
     Route::resource('user', UserController::class);
 });
-// Route::group(    ['prefix' => 'admin','middleware' => ['auth', 'role:5,6'],],function () {
-//         Route::resource('aset', AsetController::class);
-//         Route::resource('surat', SuratController::class);
-//     });
+

@@ -48,7 +48,7 @@
         $("#table1").DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('master.user') }}",
+            ajax: "{{ route('user.index') }}",
             columns: [
               {data: 'email', name: 'email'},
               {data: 'name', name: 'name'},
